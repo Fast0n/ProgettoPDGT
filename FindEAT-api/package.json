@@ -1,0 +1,19 @@
+{
+    "name": "FindEAT-api",
+    "version": "0.0.1",
+    "description": "",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.16.3",
+      "request": "^2.85.0"
+    },
+    "engines": {
+      "node": "9.x"
+    },
+    "repository": {
+      "url": "github.com/fast0n/ProgettoPDGT"
+    },
+    "license": "MIT"
+  }

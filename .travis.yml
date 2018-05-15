@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "6"
+before_script:
+  - npm install express
+  - npm install request
+script:
+  - node FindEAT-api/server.js &
+  - npm test
