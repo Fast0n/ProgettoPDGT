@@ -5,5 +5,4 @@ before_script:
   - npm install express
   - npm install request
 script:
-  - node FindEAT-api/server.js &
-  - npm test
+  - cd FindEAT-api && node server.js && npm test
