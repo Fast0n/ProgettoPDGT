@@ -1,5 +1,6 @@
 # 🍕 FindEAT 🍽 #
 [![Build Status](https://travis-ci.org/Fast0n/ProgettoPDGT.svg?branch=master)](https://travis-ci.org/Fast0n/ProgettoPDGT)
+[![Deploy](https://raw.githubusercontent.com/ashwanthkumar/gocd-build-badge-server/master/doc/passed.png)](https://findeatapi.herokuapp.com/)
 
 ## Progetto Piattaforme Digitali per la Gestione del Territorio ##
 
