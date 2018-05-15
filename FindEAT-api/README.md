@@ -2,15 +2,16 @@
 
 ## Methods
 #### search
-Search restaurants from location
+Search restaurants from coordinate or location
 
 Parameters:
-- lista [required] - place the position 'lat','lng'
+- tipo  [required] - choice between 'gps' or 'luogo'
+- lista [required] - place the position 'lat','lng' or name of city/town
 
 
 Example Usage:
 ```
-findeat-api.herokuapp.com/?lista=43.7292325,12.6129107
+findeat-api.herokuapp.com/?tipo=gps&lista=43.7292325,12.6129107
 ```
 Returns
 The standard JSON array
