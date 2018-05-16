@@ -4,7 +4,6 @@ var app = express();
 var request = require('request');
 
 // variabilli
-var nElementi = 5;
 var google_key = 'AIzaSyDzBgxO4MX2Sha0qZ7aM3P91pQlWB-fdFc';
 
 app.get('/', function (req, res) {
@@ -25,17 +24,19 @@ app.get('/', function (req, res) {
 
 
     } else {
-
+        var nElementi;
         if (req.query.tipo == 'gps' && req.query.lista != undefined)
-            richiesta('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + req.query.lista + '&radius=3000&type=restaurant&key=' + google_key, 'vicinity');
+            richiesta('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + req.query.lista + '&radius=3000&type=restaurant&key=' + google_key, 'vicinity', nElementi = 5);
 
         if (req.query.tipo == 'luogo' && req.query.lista != undefined)
-            richiesta('https://maps.googleapis.com/maps/api/place/textsearch/json?query=ristoranti+a+' + req.query.lista + '&key=' + google_key, 'formatted_address')
+            richiesta('https://maps.googleapis.com/maps/api/place/textsearch/json?query=ristoranti+a+' + req.query.lista + '&key=' + google_key, 'formatted_address', nElementi = 5)
 
+        if (req.query.tipo == 'diretto' && req.query.lista != undefined)
+            richiesta('https://maps.googleapis.com/maps/api/place/textsearch/json?query=' + req.query.lista + '&key=' + google_key, 'vicinity', nElementi = 1)
 
     }
 
-    function richiesta(uri, indirizzo) {
+    function richiesta(uri, indirizzo, nElementi) {
         // richiesta alle api da Google chiedendo un file JSON
         var options = {
             uri: uri,
@@ -105,7 +106,6 @@ app.get('/', function (req, res) {
                                 data_store1['reviews'] = reviews
                                 data_store1['orari'] = null
                             }
-
                         }
                     });
 
