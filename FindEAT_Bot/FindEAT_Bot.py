@@ -126,8 +126,16 @@ def on_chat_message(msg):
                 else:
                     orari = '\n'.join(orari)
 
-                bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari + '\nVedi i /feedback')
+                if apertura == 'Aperto' or apertura == None:
+
+                    bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
+                                    '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\nVedi i /feedback')
+
+                else:
+
+                    bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
+                                    '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari + '\nVedi i /feedback')
+
                 bot.sendLocation(chat_id, posizione[0], posizione[1])
                 user_state[chat_id] = 99
 
@@ -152,15 +160,27 @@ def on_chat_message(msg):
             posizione = json_data['lista'][0]['posizione'].split(',')
             orari = json_data['lista'][0]['orari']
 
-            bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') + '\n📱 ' +
-                            str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari + '\nVedi i /feedback')
+            if orari == None:
+                orari = 'Orari non disponibili'
+            else:
+                orari = '\n'.join(orari)
 
-            bot.sendLocation(chat_id, posizione[0], posizione[1])
-            user_state[chat_id] = 99
+            if apertura == 'Aperto' or apertura == None:
+
+                bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
+                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\nVedi i /feedback')
+
+            else:
+
+                bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
+                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari + '\nVedi i /feedback')
+
+                bot.sendLocation(chat_id, posizione[0], posizione[1])
+                user_state[chat_id] = 99
 
         except:
-            bot.sendMessage(chat_id, "Ristorante non trovato, riprova...")
             user_state[chat_id] = 5
+            bot.sendMessage(chat_id, "Ristorante non trovato, riprova...")
 
     elif user_state[chat_id] == 99:
         if msg['text'] == '/feedback':
