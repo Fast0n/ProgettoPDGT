@@ -11,8 +11,8 @@ import telepot
 
 # State for user
 user_state = {}
-
 testo_salvato = {}
+url_salvato = {}
 
 url_api = 'https://progetto-pdgt.glitch.me/'
 
@@ -106,6 +106,8 @@ def on_chat_message(msg):
             r = requests.get(
                 url=url_api + '?tipo=luogo&lista=' + testo_salvato[chat_id])
             json_data = r.json()
+            url_salvato[chat_id] = url_api + \
+                '?tipo=luogo&lista=' + testo_salvato[chat_id]
 
             if msg['text'].isdigit() and int(msg['text']) <= 5:
                 nome = json_data['lista'][int(msg['text']) - 1]['nome']
@@ -126,18 +128,22 @@ def on_chat_message(msg):
                 else:
                     orari = '\n'.join(orari)
 
-                if apertura == 'Aperto' or apertura == None:
+                keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='Visualizza feedback di Google', callback_data=1)]
+                ])
 
+                if apertura == 'Aperto' or apertura == None:
                     bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                    '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\nVedi i /feedback')
+                                    '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione))
 
                 else:
-
                     bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                    '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari + '\nVedi i /feedback')
+                                    '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari)
 
                 bot.sendLocation(chat_id, posizione[0], posizione[1])
-                user_state[chat_id] = 99
+                bot.sendMessage(
+                    chat_id, "Hai bisogno di aiuto?", reply_markup=keyboard)
+                user_state[chat_id] = 0
 
             else:
                 user_state[chat_id] = 4
@@ -151,6 +157,8 @@ def on_chat_message(msg):
             r = requests.get(
                 url=url_api + "/?tipo=diretto&lista=" + msg['text'] + ' ' + testo_salvato[chat_id])
             json_data = r.json()
+            url_salvato[chat_id] = url_api + "/?tipo=diretto&lista=" + \
+                msg['text'] + ' ' + testo_salvato[chat_id]
 
             array = ''
             nome = json_data['lista'][0]['nome']
@@ -165,45 +173,126 @@ def on_chat_message(msg):
             else:
                 orari = '\n'.join(orari)
 
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Visualizza feedback di Google', callback_data=1)]
+            ])
+
             if apertura == 'Aperto' or apertura == None:
-
                 bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\nVedi i /feedback')
-
+                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione))
             else:
-
                 bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari + '\nVedi i /feedback')
+                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari)
 
-                bot.sendLocation(chat_id, posizione[0], posizione[1])
-                user_state[chat_id] = 99
+            bot.sendLocation(chat_id, posizione[0], posizione[1])
+            bot.sendMessage(
+                chat_id, "Hai bisogno di aiuto?", reply_markup=keyboard)
+            user_state[chat_id] = 0
 
         except:
             user_state[chat_id] = 5
             bot.sendMessage(chat_id, "Ristorante non trovato, riprova...")
 
-    elif user_state[chat_id] == 99:
-        if msg['text'] == '/feedback':
-            user_state[chat_id] = 1000
-
-            keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [dict(text='indietro', callback_data='1'),
-                 dict(text='Avanti', callback_data='2')]
-            ])
-
-            bot.sendMessage(chat_id, 'Ecco i feedback di Google',
-                            reply_markup=keyboard)
-
 
 def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(
         msg, flavor='callback_query')
-    print('Callback Query:', query_id, from_id, query_data)
+    edited = (from_id, msg['message']['message_id'])
+    try:
+        r = requests.get(url=url_salvato[from_id])
+        json_data = r.json()
+    
 
-    if int(query_data) == 1:
-        bot.answerCallbackQuery(query_id, text='1')
-        bot.sendMessage(from_id, 'Work in progress')
+        if (query_data == str(1)):
 
+            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            autore = lista['author_name']
+            valurazione = str(lista['rating'])
+            commento = lista['text']
+            feedback = 'Autore: ' + autore + '\nValutazione: ' + \
+                valurazione + '\nFeedback: ' + commento
+
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Avanti', callback_data=2)]
+
+            ])
+
+            bot.editMessageText(edited, feedback,
+                                reply_markup=keyboard)
+
+        if (query_data == str(2)):
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Indietro', callback_data=1),
+                dict(text='Avanti', callback_data=3)]
+            ])
+
+            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            autore = lista['author_name']
+            valurazione = str(lista['rating'])
+            commento = lista['text']
+            feedback = 'Autore: ' + autore + '\nValutazione: ' + \
+                valurazione + '\nFeedback: ' + commento
+
+            bot.editMessageText(edited, feedback,
+                                reply_markup=keyboard)
+
+        if (query_data == str(3)):
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Indietro', callback_data=2),
+                dict(text='Avanti', callback_data=4)]
+            ])
+
+            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            autore = lista['author_name']
+            valurazione = str(lista['rating'])
+            commento = lista['text']
+            feedback = 'Autore: ' + autore + '\nValutazione: ' + \
+                valurazione + '\nFeedback: ' + commento
+
+            bot.editMessageText(edited, feedback,
+                                reply_markup=keyboard)
+
+        if (query_data == str(4)):
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Indietro', callback_data=3),
+                dict(text='Avanti', callback_data=5)]
+            ])
+
+            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            autore = lista['author_name']
+            valurazione = str(lista['rating'])
+            commento = lista['text']
+            feedback = 'Autore: ' + autore + '\nValutazione: ' + \
+                valurazione + '\nFeedback: ' + commento
+
+            bot.editMessageText(edited, feedback,
+                                reply_markup=keyboard)
+
+        if (query_data == str(5)):
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Indietro', callback_data=4),
+                dict(text='Fine', callback_data=6)]
+            ])
+
+            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            autore = lista['author_name']
+            valurazione = str(lista['rating'])
+            commento = lista['text']
+            feedback = 'Autore: ' + autore + '\nValutazione: ' + \
+                valurazione + '\nFeedback: ' + commento
+
+            bot.editMessageText(edited, feedback,
+                                reply_markup=keyboard)
+
+        if (query_data == str(6)):
+            bot.editMessageText(edited, 'Fine')
+
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Visualizza feedback di Google', callback_data=1)]
+            ])
+            bot.editMessageText(
+                edited, "Hai bisogno di aiuto?", reply_markup=keyboard)
+    except: pass
 
 def register_user(chat_id):
     """
