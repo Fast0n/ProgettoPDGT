@@ -1,4 +1,5 @@
-from settings import token, start_msg, client_file
+from firebase import firebase
+from settings import token, start_msg, client_file, url_api
 from telepot.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 from time import sleep
@@ -9,12 +10,14 @@ import reverse_geocode
 import sys
 import telepot
 
+firebase = firebase.FirebaseApplication(
+    'https://findeatdb.firebaseio.com', None)
+
 # State for user
 user_state = {}
-testo_salvato = {}
+place = {}
+restaurant = {}
 url_salvato = {}
-
-url_api = 'https://progetto-pdgt.glitch.me/'
 
 
 def on_chat_message(msg):
@@ -44,22 +47,23 @@ def on_chat_message(msg):
                     url=url_api + '?tipo=luogo&lista=' + msg['text'].lower())
                 json_data = r.json()
 
-                testo_salvato[chat_id] = msg['text'].lower()
+                place[chat_id] = msg['text'].lower()
                 array = ''
                 for i in range(5):
                     nome = json_data['lista'][i]['nome']
                     array += str(i + 1) + ': ' + nome + '\n'
 
-                bot.sendMessage(chat_id, array)
-
-                msg = "Il ristorante è nella lista?"
                 markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]
                                                        ])
-                bot.sendMessage(chat_id, msg, reply_markup=markup)
+                bot.sendMessage(
+                    chat_id, array + "\nIl ristorante è nella lista?", reply_markup=markup)
+
                 user_state[chat_id] = 3
 
             except:
-                print("Errore API")
+                bot.sendMessage(
+                    chat_id, "Qualcosa è andato storto, ci scusiamo...")
+                print("Error API")
 
         if content_type == 'location':
             # get location
@@ -71,23 +75,20 @@ def on_chat_message(msg):
                 r = requests.get(
                     url=url_api + '?tipo=luogo&lista=' + a.lower())
                 json_data = r.json()
-                testo_salvato[chat_id] = a.lower()
+                place[chat_id] = a.lower()
 
                 array = ''
                 for i in range(5):
                     nome = json_data['lista'][i]['nome']
                     array += str(i + 1) + ': ' + nome + '\n'
 
-                bot.sendMessage(chat_id, array)
+                markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+                bot.sendMessage(
+                    chat_id, array + "\nIl ristorante è nella lista?", reply_markup=markup)
 
             except:
                 print("Errore API")
 
-            # bot.sendMessage(chat_id, 'Scrivi il nome/numero del ristorante')
-            msg = "Il ristorante è nella lista?"
-            markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]
-                                                   ])
-            bot.sendMessage(chat_id, msg, reply_markup=markup)
             user_state[chat_id] = 3
 
     elif user_state[chat_id] == 3:
@@ -104,13 +105,14 @@ def on_chat_message(msg):
     elif user_state[chat_id] == 4:
         try:
             r = requests.get(
-                url=url_api + '?tipo=luogo&lista=' + testo_salvato[chat_id])
+                url=url_api + '?tipo=luogo&lista=' + place[chat_id])
             json_data = r.json()
             url_salvato[chat_id] = url_api + \
-                '?tipo=luogo&lista=' + testo_salvato[chat_id]
+                '?tipo=luogo&lista=' + place[chat_id]
 
             if msg['text'].isdigit() and int(msg['text']) <= 5:
                 nome = json_data['lista'][int(msg['text']) - 1]['nome']
+                restaurant[chat_id] = nome
 
                 orari = json_data['lista'][int(
                     msg['text']) - 1]['orari']
@@ -129,7 +131,8 @@ def on_chat_message(msg):
                     orari = '\n'.join(orari)
 
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='Visualizza feedback di Google', callback_data=1)]
+                    [dict(text='Visualizza feedback di Google', callback_data=1),
+                     dict(text='Visualizza feedback di FindEAT', callback_data=7)]
                 ])
 
                 if apertura == 'Aperto' or apertura == None:
@@ -155,13 +158,14 @@ def on_chat_message(msg):
     elif user_state[chat_id] == 5:
         try:
             r = requests.get(
-                url=url_api + "/?tipo=diretto&lista=" + msg['text'] + ' ' + testo_salvato[chat_id])
+                url=url_api + "/?tipo=diretto&lista=" + msg['text'] + ' ' + place[chat_id])
             json_data = r.json()
             url_salvato[chat_id] = url_api + "/?tipo=diretto&lista=" + \
-                msg['text'] + ' ' + testo_salvato[chat_id]
+                msg['text'] + ' ' + place[chat_id]
 
             array = ''
             nome = json_data['lista'][0]['nome']
+            restaurant[chat_id] = nome
             apertura = json_data['lista'][0]['apertura']
             numtell = json_data['lista'][0]['numtell']
             valutazione = json_data['lista'][0]['valutazione']
@@ -174,7 +178,8 @@ def on_chat_message(msg):
                 orari = '\n'.join(orari)
 
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [dict(text='Visualizza feedback di Google', callback_data=1)]
+                [dict(text='Visualizza feedback di Google', callback_data=1),
+                 dict(text='Visualizza feedback di FindEAT', callback_data=7)]
             ])
 
             if apertura == 'Aperto' or apertura == None:
@@ -193,6 +198,31 @@ def on_chat_message(msg):
             user_state[chat_id] = 5
             bot.sendMessage(chat_id, "Ristorante non trovato, riprova...")
 
+    elif user_state[chat_id] == 6:
+        try:
+            author = msg['from']['first_name'] + ' ' + msg['from']['last_name']
+        except:
+            author = msg['from']['first_name']
+
+        result = firebase.get(
+            '/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/', None)
+        try:
+            i = len(result)
+            result = firebase.patch('/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/'+str(i)+'/',
+                                    {'author': author, 'text': msg['text']})
+            bot.sendMessage(
+                chat_id, 'Grazie per aver recensito ' + restaurant[chat_id] + ', questa è la ' +
+                str(i+1) + ' recensione fatta 😄')
+            user_state[chat_id] = 0
+        except:
+            i = 0
+            # put element to firebase
+            result = firebase.patch('/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/'+str(i)+'/',
+                                    {'author': author, 'text': msg['text']})
+            bot.sendMessage(
+                chat_id, 'Complimenti! Hai creato la prima recensione per ' + restaurant[chat_id])
+            user_state[chat_id] = 0
+
 
 def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(
@@ -201,7 +231,6 @@ def on_callback_query(msg):
     try:
         r = requests.get(url=url_salvato[from_id])
         json_data = r.json()
-    
 
         if (query_data == str(1)):
 
@@ -223,7 +252,7 @@ def on_callback_query(msg):
         if (query_data == str(2)):
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [dict(text='Indietro', callback_data=1),
-                dict(text='Avanti', callback_data=3)]
+                 dict(text='Avanti', callback_data=3)]
             ])
 
             lista = json_data['lista'][0]['reviews'][int(query_data)-1]
@@ -239,7 +268,7 @@ def on_callback_query(msg):
         if (query_data == str(3)):
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [dict(text='Indietro', callback_data=2),
-                dict(text='Avanti', callback_data=4)]
+                 dict(text='Avanti', callback_data=4)]
             ])
 
             lista = json_data['lista'][0]['reviews'][int(query_data)-1]
@@ -255,7 +284,7 @@ def on_callback_query(msg):
         if (query_data == str(4)):
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [dict(text='Indietro', callback_data=3),
-                dict(text='Avanti', callback_data=5)]
+                 dict(text='Avanti', callback_data=5)]
             ])
 
             lista = json_data['lista'][0]['reviews'][int(query_data)-1]
@@ -271,7 +300,7 @@ def on_callback_query(msg):
         if (query_data == str(5)):
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [dict(text='Indietro', callback_data=4),
-                dict(text='Fine', callback_data=6)]
+                 dict(text='Fine', callback_data=6)]
             ])
 
             lista = json_data['lista'][0]['reviews'][int(query_data)-1]
@@ -292,7 +321,58 @@ def on_callback_query(msg):
             ])
             bot.editMessageText(
                 edited, "Hai bisogno di aiuto?", reply_markup=keyboard)
-    except: pass
+
+        if (query_data == str(7)):
+            result = firebase.get(
+                '/restaurants/'+place[from_id] + '/'+restaurant[from_id] + '/', None)
+            if result == None:
+                keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='Scrivi una recensione', callback_data=100)]
+                ])
+                bot.editMessageText(
+                    edited, 'Nessuna recensione!', reply_markup=keyboard)
+            else:
+                i = len(result)
+                if i == 1:
+                    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                        [dict(text='Visualizza recensione', callback_data=8),
+                         dict(text='Scrivi una recensione', callback_data=100)]
+                    ])
+                    bot.editMessageText(
+                        edited, str(i) + ' recensione trovata', reply_markup=keyboard)
+
+                else:
+                    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                        [dict(text='Visualizza recensioni', callback_data=8),
+                            dict(text='Scrivi una recensione', callback_data=100)]
+                    ])
+                    bot.editMessageText(
+                        edited, str(i) + ' recensioni trovate', reply_markup=keyboard)
+
+        if (query_data == str(8)):
+            result = firebase.get(
+                '/restaurants/'+place[from_id] + '/'+restaurant[from_id] + '/', None)
+            o = len(result)
+            feedback = ''
+            for i in range(int(o)):
+                feedback = feedback + \
+                    str(i+1)+') Autore: '+result[i]['author'] + \
+                    ' \nFeedback: ' + result[i]['text'] + '\n\n'
+
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Visualizza feedback di FindEAT', callback_data=7)]
+            ])
+            bot.editMessageText(
+                edited, 'Feedback di FindEAT:\n' + feedback,  reply_markup=keyboard)
+
+        # scrivi recensione
+        if (query_data == str(100)):
+            bot.editMessageText(edited, "Inserisci il tuo feedback")
+            user_state[from_id] = 6
+
+    except Exception as e:
+        print(e)
+
 
 def register_user(chat_id):
     """

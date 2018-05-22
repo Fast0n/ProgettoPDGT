@@ -1,4 +1,5 @@
 future
+python-firebase
 requests
 reverse_geocode
 simplejson

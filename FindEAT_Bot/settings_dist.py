@@ -8,3 +8,6 @@ start_msg = "Benvenuto su @FindEAT\_Bot\n"\
 
 # File with 'started' clients
 client_file = "clients_id.txt"
+
+# Url for api
+url_api = 'URL'
