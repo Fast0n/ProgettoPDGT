@@ -18,6 +18,7 @@ user_state = {}
 place = {}
 restaurant = {}
 url_salvato = {}
+place_id = {}
 
 
 def on_chat_message(msg):
@@ -42,54 +43,14 @@ def on_chat_message(msg):
 
     elif user_state[chat_id] == 2:
         if content_type == 'text':
-            try:
-                r = requests.get(
-                    url=url_api + '?tipo=luogo&lista=' + msg['text'].lower())
-                json_data = r.json()
-
-                place[chat_id] = msg['text'].lower()
-                array = ''
-                for i in range(5):
-                    nome = json_data['lista'][i]['nome']
-                    array += str(i + 1) + ': ' + nome + '\n'
-
-                markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]
-                                                       ])
-                bot.sendMessage(
-                    chat_id, array + "\nIl ristorante è nella lista?", reply_markup=markup)
-
-                user_state[chat_id] = 3
-
-            except:
-                bot.sendMessage(
-                    chat_id, "Qualcosa è andato storto, ci scusiamo...")
-                print("Error API")
+            cerca(msg['text'], msg)
 
         if content_type == 'location':
-            # get location
             coordinates = (str(msg['location']['latitude']),
                            str(msg['location']['longitude'])),
             a = reverse_geocode.search(coordinates)[0]['city']
 
-            try:
-                r = requests.get(
-                    url=url_api + '?tipo=luogo&lista=' + a.lower())
-                json_data = r.json()
-                place[chat_id] = a.lower()
-
-                array = ''
-                for i in range(5):
-                    nome = json_data['lista'][i]['nome']
-                    array += str(i + 1) + ': ' + nome + '\n'
-
-                markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
-                bot.sendMessage(
-                    chat_id, array + "\nIl ristorante è nella lista?", reply_markup=markup)
-
-            except:
-                print("Errore API")
-
-            user_state[chat_id] = 3
+            cerca(a, msg)
 
     elif user_state[chat_id] == 3:
 
@@ -97,106 +58,19 @@ def on_chat_message(msg):
             user_state[chat_id] = 4
             bot.sendMessage(chat_id, 'Scrivi il numero del ristorante', reply_markup=ReplyKeyboardRemove(
                 remove_keyboard=True))
+
         if msg['text'] == 'No':
             bot.sendMessage(chat_id, 'Scrivi il nome del ristorante', reply_markup=ReplyKeyboardRemove(
                 remove_keyboard=True))
-            user_state[chat_id] = 5
+            user_state[chat_id] = 4
 
     elif user_state[chat_id] == 4:
-        try:
-            r = requests.get(
-                url=url_api + '?tipo=luogo&lista=' + place[chat_id])
-            json_data = r.json()
-            url_salvato[chat_id] = url_api + \
-                '?tipo=luogo&lista=' + place[chat_id]
-
-            if msg['text'].isdigit() and int(msg['text']) <= 5:
-                nome = json_data['lista'][int(msg['text']) - 1]['nome']
-                restaurant[chat_id] = nome
-
-                orari = json_data['lista'][int(
-                    msg['text']) - 1]['orari']
-                posizione = json_data['lista'][int(
-                    msg['text']) - 1]['posizione'].split(',')
-                apertura = json_data['lista'][int(
-                    msg['text']) - 1]['apertura']
-                numtell = json_data['lista'][int(
-                    msg['text']) - 1]['numtell']
-                valutazione = json_data['lista'][int(
-                    msg['text']) - 1]['valutazione']
-
-                if orari == None:
-                    orari = 'Orari non disponibili'
-                else:
-                    orari = '\n'.join(orari)
-
-                keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='Visualizza feedback di Google', callback_data=1),
-                     dict(text='Visualizza feedback di FindEAT', callback_data=7)]
-                ])
-
-                if apertura == 'Aperto' or apertura == None:
-                    bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                    '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione))
-
-                else:
-                    bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                    '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari)
-
-                bot.sendLocation(chat_id, posizione[0], posizione[1])
-                bot.sendMessage(
-                    chat_id, "Hai bisogno di aiuto?", reply_markup=keyboard)
-                user_state[chat_id] = 0
-
-            else:
-                user_state[chat_id] = 4
-                bot.sendMessage(chat_id, 'Scrivi il numero del ristorante')
-
-        except:
-            print("Errore API")
+        richiesta(url_api + '?tipo=id&lista=' +
+                  place_id[chat_id][int(msg['text'])-1], msg)
 
     elif user_state[chat_id] == 5:
-        try:
-            r = requests.get(
-                url=url_api + "/?tipo=diretto&lista=" + msg['text'] + ' ' + place[chat_id])
-            json_data = r.json()
-            url_salvato[chat_id] = url_api + "/?tipo=diretto&lista=" + \
-                msg['text'] + ' ' + place[chat_id]
-
-            array = ''
-            nome = json_data['lista'][0]['nome']
-            restaurant[chat_id] = nome
-            apertura = json_data['lista'][0]['apertura']
-            numtell = json_data['lista'][0]['numtell']
-            valutazione = json_data['lista'][0]['valutazione']
-            posizione = json_data['lista'][0]['posizione'].split(',')
-            orari = json_data['lista'][0]['orari']
-
-            if orari == None:
-                orari = 'Orari non disponibili'
-            else:
-                orari = '\n'.join(orari)
-
-            keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [dict(text='Visualizza feedback di Google', callback_data=1),
-                 dict(text='Visualizza feedback di FindEAT', callback_data=7)]
-            ])
-
-            if apertura == 'Aperto' or apertura == None:
-                bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione))
-            else:
-                bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                                '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari)
-
-            bot.sendLocation(chat_id, posizione[0], posizione[1])
-            bot.sendMessage(
-                chat_id, "Hai bisogno di aiuto?", reply_markup=keyboard)
-            user_state[chat_id] = 0
-
-        except:
-            user_state[chat_id] = 5
-            bot.sendMessage(chat_id, "Ristorante non trovato, riprova...")
+        richiesta(url_api + "/?tipo=diretto&lista=" +
+                  msg['text'] + ' ' + place[chat_id], msg)
 
     elif user_state[chat_id] == 6:
         try:
@@ -224,6 +98,73 @@ def on_chat_message(msg):
             user_state[chat_id] = 0
 
 
+def richiesta(url, msg):
+    content_type, chat_type, chat_id = telepot.glance(msg)
+    try:
+        r = requests.get(
+            url=url)
+        json_data = r.json()
+        url_salvato[chat_id] = url
+
+        nome = json_data['lista'][0]['nome']
+        orari = json_data['orari']
+        posizione = json_data['lista'][0]['posizione'].split(',')
+        apertura = json_data['lista'][0]['apertura']
+        numtell = json_data['lista'][0]['numtell']
+        valutazione = json_data['lista'][0]['valutazione']
+
+        if orari == None:
+            orari = 'Orari non disponibili'
+        else:
+            orari = '\n'.join(orari)
+        restaurant[chat_id] = nome
+
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [dict(text='Visualizza feedback di Google', callback_data=1),
+             dict(text='Visualizza feedback di FindEAT', callback_data=7)]
+        ])
+
+        if apertura == 'Aperto' or apertura == None:
+            bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
+                            '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione))
+
+        else:
+            bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
+                            '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari)
+
+        bot.sendLocation(chat_id, posizione[0], posizione[1])
+        bot.sendMessage(
+            chat_id, "Hai bisogno di aiuto?", reply_markup=keyboard)
+        user_state[chat_id] = 0
+
+    except:
+        print("Errore API")
+
+
+def cerca(luogo, msg):
+    content_type, chat_type, chat_id = telepot.glance(msg)
+    r = requests.get(
+        url=url_api + '?tipo=luogo&lista=' + luogo.lower())
+    json_data = r.json()
+    place[chat_id] = luogo.lower()
+
+    array = ''
+    array1 = ''
+    for i in range(5):
+        nome = json_data['lista'][i]['nome']
+        placeid = json_data['lista'][i]['id']
+        array += str(i + 1) + ': ' + nome + '\n'
+        array1 += placeid + ','
+
+    place_id[chat_id] = array1.split(',')
+
+    markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+    bot.sendMessage(
+        chat_id, array + "\nIl ristorante è nella lista?", reply_markup=markup)
+
+    user_state[chat_id] = 3
+
+
 def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(
         msg, flavor='callback_query')
@@ -234,7 +175,7 @@ def on_callback_query(msg):
 
         if (query_data == str(1)):
 
-            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            lista = json_data['feedback'][int(query_data)-1]
             autore = lista['author_name']
             valurazione = str(lista['rating'])
             commento = lista['text']
@@ -255,7 +196,7 @@ def on_callback_query(msg):
                  dict(text='Avanti', callback_data=3)]
             ])
 
-            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            lista = json_data['feedback'][int(query_data)-1]
             autore = lista['author_name']
             valurazione = str(lista['rating'])
             commento = lista['text']
@@ -271,7 +212,7 @@ def on_callback_query(msg):
                  dict(text='Avanti', callback_data=4)]
             ])
 
-            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            lista = json_data['feedback'][int(query_data)-1]
             autore = lista['author_name']
             valurazione = str(lista['rating'])
             commento = lista['text']
@@ -287,7 +228,7 @@ def on_callback_query(msg):
                  dict(text='Avanti', callback_data=5)]
             ])
 
-            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            lista = json_data['feedback'][int(query_data)-1]
             autore = lista['author_name']
             valurazione = str(lista['rating'])
             commento = lista['text']
@@ -303,7 +244,7 @@ def on_callback_query(msg):
                  dict(text='Fine', callback_data=6)]
             ])
 
-            lista = json_data['lista'][0]['reviews'][int(query_data)-1]
+            lista = json_data['feedback'][int(query_data)-1]
             autore = lista['author_name']
             valurazione = str(lista['rating'])
             commento = lista['text']
