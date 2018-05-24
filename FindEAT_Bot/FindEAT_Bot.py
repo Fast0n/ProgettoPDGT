@@ -62,15 +62,24 @@ def on_chat_message(msg):
         if msg['text'] == 'No':
             bot.sendMessage(chat_id, 'Scrivi il nome del ristorante', reply_markup=ReplyKeyboardRemove(
                 remove_keyboard=True))
-            user_state[chat_id] = 4
+            user_state[chat_id] = 5
 
     elif user_state[chat_id] == 4:
         richiesta(url_api + '?tipo=id&lista=' +
                   place_id[chat_id][int(msg['text'])-1], msg)
 
     elif user_state[chat_id] == 5:
-        richiesta(url_api + "/?tipo=diretto&lista=" +
-                  msg['text'] + ' ' + place[chat_id], msg)
+        try:
+            r = requests.get(
+                url=url_api + "?tipo=diretto&lista=" +
+                msg['text'] + ' ' + place[chat_id])
+            json_data = r.json()
+
+            placeid = json_data['lista'][0]['id']
+        except:
+            print('Errore 81')
+
+        richiesta(url_api + "?tipo=id&lista=" + placeid, msg)
 
     elif user_state[chat_id] == 6:
         try:
