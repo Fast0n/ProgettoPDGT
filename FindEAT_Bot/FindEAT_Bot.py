@@ -35,13 +35,14 @@ def on_chat_message(msg):
         if register_user(chat_id):
             bot.sendMessage(chat_id, start_msg, parse_mode='Markdown')
 
-    if 'text' in msg and msg['text'] == '/cerca':
+    elif 'text' in msg and msg['text'] == '/cerca':
 
         bot.sendMessage(
             chat_id, 'Invia la zona del ristorante o la tua posizione')
         user_state[chat_id] = 2
 
     elif user_state[chat_id] == 2:
+     
         if content_type == 'text':
             cerca(msg['text'], msg)
 
@@ -51,6 +52,9 @@ def on_chat_message(msg):
             a = reverse_geocode.search(coordinates)[0]['city']
 
             cerca(a, msg)
+
+        user_state[chat_id] = 3
+
 
     elif user_state[chat_id] == 3:
 
@@ -65,10 +69,14 @@ def on_chat_message(msg):
             user_state[chat_id] = 5
 
     elif user_state[chat_id] == 4:
+
         richiesta(url_api + '?tipo=id&lista=' +
                   place_id[chat_id][int(msg['text'])-1], msg)
 
+                 
+
     elif user_state[chat_id] == 5:
+
         try:
             r = requests.get(
                 url=url_api + "?tipo=diretto&lista=" +
@@ -76,12 +84,36 @@ def on_chat_message(msg):
             json_data = r.json()
 
             placeid = json_data['lista'][0]['id']
+            nome = json_data['lista'][0]['nome']
+
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/' + nome + '/contatore/0', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+nome + '/contatore', {'0': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+nome + '/contatore', {'0': 0})
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+nome + '/contatore/0', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+nome + '/contatore', {'0': n+1})
+
         except:
             print('Errore 81')
 
         richiesta(url_api + "?tipo=id&lista=" + placeid, msg)
 
+        user_state[chat_id] = 6
+
+
     elif user_state[chat_id] == 6:
+
         try:
             author = msg['from']['first_name'] + ' ' + msg['from']['last_name']
         except:
@@ -96,7 +128,14 @@ def on_chat_message(msg):
             bot.sendMessage(
                 chat_id, 'Grazie per aver recensito ' + restaurant[chat_id] + ', questa è la ' +
                 str(i+1) + ' recensione fatta 😄')
-            user_state[chat_id] = 0
+
+            markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+
+            bot.sendMessage(
+                chat_id, 'Si può pagare con carte di credito?', reply_markup=markup)
+
+            user_state[chat_id] = 7
+
         except:
             i = 0
             # put element to firebase
@@ -104,12 +143,227 @@ def on_chat_message(msg):
                                     {'author': author, 'text': msg['text']})
             bot.sendMessage(
                 chat_id, 'Complimenti! Hai creato la prima recensione per ' + restaurant[chat_id])
-            user_state[chat_id] = 0
+
+            markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+
+            bot.sendMessage(
+                chat_id, 'Abbiamo altre domande per te!!!👍 \nSi può pagare con carte di credito?', reply_markup=markup)
+            user_state[chat_id] = 7
+
+    elif user_state[chat_id] == 7:
+        try:
+            author = msg['from']['first_name'] + ' ' + msg['from']['last_name']
+        except:
+            author = msg['from']['first_name']
+
+        if msg['text'] == 'Si':
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/votisi', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', {'votisi': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', {'votisi': 0, 'votino': 0})
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/votisi', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', {'votisi': n+1})
+
+        if msg['text'] == 'No':
+
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/votino', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', {'votino': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', {'votisi': 0, 'votino': 0})
+
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/votino', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', {'votino': n+1})
+
+        markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+
+        bot.sendMessage(
+            chat_id, 'Il ristorante è costoso?', reply_markup=markup)
+
+        user_state[chat_id] = 8
+
+    elif user_state[chat_id] == 8:
+
+        try:
+            author = msg['from']['first_name'] + ' ' + msg['from']['last_name']
+        except:
+            author = msg['from']['first_name']
+
+        if msg['text'] == 'Si':
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/alto', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/', {'alto': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/', {'alto': 0, 'basso': 0})
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/alto', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/', {'alto': n+1})
+
+        if msg['text'] == 'No':
+
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/basso', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/', {'basso': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/', {'alto': 0, 'basso': 0})
+
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/basso', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costi/', {'basso': n+1})
+
+        markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+        bot.sendMessage(
+            chat_id, 'Il ristorante prevede un menù senza glutine?', reply_markup=markup)
+        user_state[chat_id] = 9
+
+    elif user_state[chat_id] == 9:
+        try:
+            author = msg['from']['first_name'] + ' ' + msg['from']['last_name']
+        except:
+            author = msg['from']['first_name']
+
+        if msg['text'] == 'Si':
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', {'votosi': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', {'votosi': 0, 'votono': 0})
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci/votosi', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', {'votosi': n+1})
+
+        if msg['text'] == 'No':
+
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci/votono', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', {'votono': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', {'votosi': 0, 'votono': 0})
+
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci/votono', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', {'votono': n+1})
+
+        markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+        bot.sendMessage(
+            chat_id, 'Il ristorante prevede un menù per bambini?', reply_markup=markup)
+        user_state[chat_id] = 10
+
+    elif user_state[chat_id] == 10:
+        try:
+            author = msg['from']['first_name'] + ' ' + msg['from']['last_name']
+        except:
+            author = msg['from']['first_name']
+
+        if msg['text'] == 'Si':
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', {'votosi': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', {'votosi': 0, 'votono': 0})
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino/votosi', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', {'votosi': n+1})
+
+            bot.sendMessage(
+                chat_id, 'Grazie per aver risposto alle domande!!!🤞🏻🤝😄 ')
+
+        if msg['text'] == 'No':
+            try:
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino/votono', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', {'votono': n+1})
+
+            except:
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', {'votosi': 0, 'votono': 0})
+
+                result = firebase.get(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino/votono', None)
+
+                n = int(result)
+                result = firebase.patch(
+                    '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', {'votono': n+1})
+
+        bot.sendMessage(
+            chat_id, 'Grazie per aver risposto alle domande!!!🤞🏻🤝😄 ')
+        user_state[chat_id] = 0
 
 
 def richiesta(url, msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
+
     try:
+
         r = requests.get(
             url=url)
         json_data = r.json()
