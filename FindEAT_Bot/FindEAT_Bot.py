@@ -69,8 +69,19 @@ def on_chat_message(msg):
                   place_id[chat_id][int(msg['text'])-1], msg)
 
     elif user_state[chat_id] == 5:
-        richiesta(url_api + "?tipo=diretto&lista=" +
-                  msg['text'] + ' ' + place[chat_id], msg)
+
+        try:
+            r = requests.get(
+                url=url_api + "?tipo=diretto&lista=" +
+                msg['text'] + ' ' + place[chat_id])
+            json_data = r.json()
+
+            placeid = json_data['lista'][0]['id']
+
+        except:
+            print('Errore 82')
+
+        richiesta(url_api + "?tipo=id&lista=" + placeid, msg)
 
     elif user_state[chat_id] == 6:
 
@@ -169,17 +180,34 @@ def on_chat_message(msg):
         user_state[chat_id] = 0
 
 
+def filtri(get, patch, request, check):
+
+    try:
+        result = firebase.get(get, None)
+
+        n = int(result)
+        result = firebase.patch(patch, {request: n+1})
+
+    except:
+        result = firebase.patch(patch, check)
+        result = firebase.get(get, None)
+
+        n = int(result)
+        result = firebase.patch(patch, {request: n+1})
+
+
 def richiesta(url, msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
 
     try:
+
         r = requests.get(
             url=url)
         json_data = r.json()
         url_salvato[chat_id] = url
 
         nome = json_data['lista'][0]['nome']
-        orari = json_data['orari'][0]
+        orari = json_data['orari']
         posizione = json_data['lista'][0]['posizione'].split(',')
         apertura = json_data['lista'][0]['apertura']
         numtell = json_data['lista'][0]['numtell']
@@ -189,11 +217,23 @@ def richiesta(url, msg):
             orari = 'Orari non disponibili'
         else:
             orari = '\n'.join(orari)
-
         restaurant[chat_id] = nome
 
-        filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/contatore/0',
-               '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/contatore/', '0', {'0': 0})
+        try:
+            result = firebase.get(
+                            '/filters/'+place[chat_id]  + '/'+  restaurant[chat_id]   + '/contatore/0', None)
+            n = int(result)
+            result = firebase.patch(
+                            '/filters/'+place[chat_id] + '/'+ restaurant[chat_id] + '/contatore/', {'0': n+1})
+        except:
+            result = firebase.patch(
+                            '/filters/'+place[chat_id] + '/'+ restaurant[chat_id] + '/contatore/', {'0': 0})
+
+            result = firebase.get(
+                            '/filters/'+place[chat_id]  + '/'+  restaurant[chat_id]   + '/contatore/0', None)
+            n = int(result)
+            result = firebase.patch(
+                            '/filters/'+place[chat_id] + '/'+ restaurant[chat_id] + '/contatore/', {'0': n+1})
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [dict(text='Visualizza feedback di Google', callback_data=1),
@@ -215,22 +255,6 @@ def richiesta(url, msg):
 
     except:
         print("Errore API")
-
-
-def filtri(get, patch, request, check):
-
-    try:
-        result = firebase.get(get, None)
-
-        n = int(result)
-        result = firebase.patch(patch, {request: n+1})
-
-    except:
-        result = firebase.patch(patch, check)
-        result = firebase.get(get, None)
-
-        n = int(result)
-        result = firebase.patch(patch, {request: n+1})
 
 
 def cerca(luogo, msg):

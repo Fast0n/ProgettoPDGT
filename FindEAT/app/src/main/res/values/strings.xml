@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">FindEAT</string>
+    <string name="recent">Recenti</string>
+    <string name="search_box">Inserisci la tua posizione</string>
+    <string name="search_box_title">Cerca ristorante a…</string>
+
+
+    <string name="warning">Warning</string>
+    <string name="warning_content">Please enabled GPS from settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_restorants">RestorantsActivity</string>
+
+    <string name="delete">Cancella</string>
+    <string name="sure">Sei sicuro?</string>
+</resources>
