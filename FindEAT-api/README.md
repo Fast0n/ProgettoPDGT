@@ -1,26 +1,52 @@
 # FindEAT-api
 
 ## Methods
-#### search
-Search restaurants from coordinate or location
+#### search for 'luogo'
+List of restaurants from location
 
 Parameters:
-- tipo  [required] - choice between 'gps' or 'luogo'
-- lista [required] - place the position 'lat','lng' or name of city/town
+- tipo  [required] - luogo
+- lista [required] - name of city/town
 
 
 Example Usage:
 ```
-findeat-api.herokuapp.com/?tipo=gps&lista=43.7292325,12.6129107
+findeat-api.herokuapp.com/?tipo=luogo&lista=urbino
 ```
 Returns
 The standard JSON array
 
-- name
-- adress
-- location
-- opening
-- telephone number
-- website
-- rating
-- times
+- google id
+- nome
+- indirizzo
+- posizione
+- apertura
+- valutazione
+
+
+## Methods
+#### search for 'diretto'
+Search restaurants from location
+
+Parameters:
+- tipo  [required] - diretto
+- lista [required] - name of restaurant and city/town
+
+
+Example Usage:
+```
+findeat-api.herokuapp.com/?tipo=diretto&lista=il ghiottone urbino
+```
+Returns
+The standard JSON array
+
+- nome
+- indirizzo
+- posizione
+- apertura
+- valutazione
+- photo
+- numtell
+- sitoweb
+- orari
+- feedback google
