@@ -1,19 +1,20 @@
 {
-    "name": "FindEAT-api",
-    "version": "0.0.1",
-    "description": "",
-    "scripts": {
-      "start": "cd FindEAT-api; node server.js"
-    },
-    "dependencies": {
-      "express": "^4.16.3",
-      "request": "^2.85.0"
-    },
-    "engines": {
-      "node": "9.x"
-    },
-    "repository": {
-      "url": "github.com/fast0n/ProgettoPDGT"
-    },
-    "license": "MIT"
-  }
+  "name": "FindEAT-api",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "start": "cd FindEAT-api; node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "request": "^2.85.0",
+    "random-number-in-range": "^1.0.2"
+  },
+  "engines": {
+    "node": "9.x"
+  },
+  "repository": {
+    "url": "github.com/fast0n/ProgettoPDGT"
+  },
+  "license": "MIT"
+}
