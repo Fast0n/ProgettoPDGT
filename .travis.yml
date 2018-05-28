@@ -5,6 +5,7 @@ before_script:
   - cd FindEAT-api
   - npm install express
   - npm install request
+  - npm install random-number-in-range
 script:
   -  node server.js & 
   -  npm test
