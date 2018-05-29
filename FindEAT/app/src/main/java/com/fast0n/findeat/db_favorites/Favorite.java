@@ -1,13 +1,13 @@
-package com.fast0n.findeat.database;
+package com.fast0n.findeat.db_favorites;
 
-public class Record {
+public class Favorite {
     private int id;
     private String record;
 
-    public Record() {
+    public Favorite() {
     }
 
-    public Record(int id, String record) {
+    public Favorite(int id, String record) {
         this.id = id;
         this.record = record;
     }

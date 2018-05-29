@@ -1,4 +1,4 @@
-package com.fast0n.findeat.database;
+package com.fast0n.findeat.db_favorites;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,21 +12,21 @@ import com.fast0n.findeat.R;
 
 import java.util.List;
 
-public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.MyViewHolder> {
+public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyViewHolder> {
 
     private Context context;
-    private List<Record> recordsList;
+    private List<Favorite> recordsList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView record;
 
         public MyViewHolder(View view) {
             super(view);
-            record = view.findViewById(R.id.record);
+            record = view.findViewById(R.id.recent);
         }
     }
 
-    public RecordsAdapter(Context context, List<Record> recordsList) {
+    public FavoritesAdapter(Context context, List<Favorite> recordsList) {
         this.context = context;
         this.recordsList = recordsList;
     }
@@ -40,9 +40,9 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Record record = recordsList.get(position);
+        Favorite recent = recordsList.get(position);
 
-        String recordText = record.getRecord().toUpperCase().charAt(0)+record.getRecord().substring(1,record.getRecord().length());
+        String recordText = recent.getRecord().toUpperCase().charAt(0)+ recent.getRecord().substring(1, recent.getRecord().length());
         holder.record.setText(recordText);
 
     }

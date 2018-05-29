@@ -1,4 +1,4 @@
-package com.fast0n.findeat.list_restaurants;
+package com.fast0n.findeat.java;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

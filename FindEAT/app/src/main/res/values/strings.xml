@@ -13,4 +13,19 @@
 
     <string name="delete">Cancella</string>
     <string name="sure">Sei sicuro?</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_fragment_two">FragmentTwoActivity</string>
+    <string name="title_activity_fragment_three">activity_fragment_three</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_restaurants_list">RestaurantsListActivity</string>
+    <string name="title_activity_info">Informazioni</string>
+    <string name="version">Versione</string>
+
+
+
 </resources>

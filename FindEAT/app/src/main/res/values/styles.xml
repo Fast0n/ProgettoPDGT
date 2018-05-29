@@ -23,13 +23,11 @@
     <!-- Style navigation drawer activity  -->
 
     <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <!-- Colore Title Home -->
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" >
-    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light"></style>
     <!-- Colore Title Impostazioni -->
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
 

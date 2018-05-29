@@ -44,7 +44,7 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_gravity="center"
-                    android:id="@+id/record"
+                    android:id="@+id/recent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"

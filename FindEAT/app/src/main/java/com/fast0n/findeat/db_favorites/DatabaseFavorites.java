@@ -1,4 +1,5 @@
-package com.fast0n.findeat.database;
+package com.fast0n.findeat.db_favorites;
+
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,19 +10,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class DatabaseFavorites extends SQLiteOpenHelper {
 
     public static final String COLUMN_ID = "id";
     public static final String TABLE_NAME = "records";
-    public static final String COLUMN_RECORD = "record";
+    public static final String COLUMN_RECORD = "favorite";
 
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "db";
+    private static final String DATABASE_NAME = "db_favorites";
 
-    public DatabaseHelper(Context context) {
+    public DatabaseFavorites(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -68,7 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Record getRecord(long id) {
+    public Favorite getRecord(long id) {
         // get readable database as we are not inserting anything
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -79,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
         // prepare record object
-        Record record = new Record(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)),
+        Favorite record = new Favorite(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_RECORD)));
 
         // close the db connection
@@ -88,8 +89,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return record;
     }
 
-    public List<Record> getAllRecords() {
-        List<Record> records = new ArrayList<>();
+    public List<Favorite> getAllRecords() {
+        List<Favorite> records = new ArrayList<>();
 
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NAME;
@@ -100,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                Record record = new Record();
+                Favorite record = new Favorite();
                 record.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
                 record.setRecord(cursor.getString(cursor.getColumnIndex(COLUMN_RECORD)));
 
@@ -127,7 +128,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public void deleteRecord(Record record) {
+    public void deleteRecord(Favorite record) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[] { String.valueOf(record.getId()) });
         db.close();

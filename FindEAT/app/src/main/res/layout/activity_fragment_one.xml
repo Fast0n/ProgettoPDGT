@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/content_fragment_one" />
+
+    <com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabIcon="@drawable/ic_message"
+        app:fabSizes="normal"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp" />
+
+
+    <com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabIcon="@drawable/ic_favorite_border"
+        app:fabSizes="normal"
+        android:layout_gravity="start|bottom"
+        android:layout_margin="16dp" />
+
+
+    <com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSizes="normal"
+        android:paddingLeft="1000dp"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_gravity="center|bottom" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center|bottom" />
+
+
+
+</android.support.design.widget.CoordinatorLayout>
