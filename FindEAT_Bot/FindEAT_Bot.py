@@ -3,6 +3,7 @@ from settings import token, start_msg, client_file, url_api
 from telepot.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 from time import sleep
+import time
 import json
 import os
 import requests
@@ -82,9 +83,10 @@ def on_chat_message(msg):
         result = firebase.get(
             '/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/', None)
         try:
+            datetime = int(time.time())
             i = len(result)
             result = firebase.patch('/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/'+str(i)+'/',
-                                    {'author': author, 'text': msg['text']})
+                                    {'author_name': author, 'text': msg['text'], 'time': datetime })
             bot.sendMessage(
                 chat_id, 'Grazie per aver recensito ' + restaurant[chat_id] + ', questa è la ' +
                 str(i+1) + ' recensione fatta 😄')
@@ -97,9 +99,10 @@ def on_chat_message(msg):
             user_state[chat_id] = 7
 
         except:
+            datetime = int(time.time())
             i = 0
             result = firebase.patch('/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/'+str(i)+'/',
-                                    {'author': author, 'text': msg['text']})
+                                    {'author_name': author, 'text': msg['text'], 'time': datetime})
             bot.sendMessage(
                 chat_id, 'Complimenti! Hai creato la prima recensione per ' + restaurant[chat_id])
 
@@ -138,7 +141,7 @@ def on_chat_message(msg):
 
         markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
         bot.sendMessage(
-            chat_id, 'Il ristorante prevede un menù senza glutine?', reply_markup=markup)
+            chat_id, 'Il ristorante prevede un menu senza glutine?', reply_markup=markup)
         user_state[chat_id] = 9
 
     elif user_state[chat_id] == 9:
@@ -152,7 +155,7 @@ def on_chat_message(msg):
 
         markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
         bot.sendMessage(
-            chat_id, 'Il ristorante prevede un menù per bambini?', reply_markup=markup)
+            chat_id, 'Il ristorante prevede un menu per bambini?', reply_markup=markup)
         user_state[chat_id] = 10
 
     elif user_state[chat_id] == 10:
@@ -423,9 +426,12 @@ def on_callback_query(msg):
             o = len(result)
             feedback = ''
             for i in range(int(o)):
+                unix_timestamp = result[i]['time']
+                utc_time = time.gmtime(unix_timestamp)
+                local_time = time.localtime(unix_timestamp)
                 feedback = feedback +\
-                    str(i+1)+') Autore: '+result[i]['author'] + \
-                    ' \nFeedback: ' + result[i]['text'] + '\n\n'
+                    str(i+1)+') Autore: '+result[i]['author_name'] + \
+                    '\nData: '+ str(time.strftime("%d/%m/%Y", local_time)) + '\nFeedback: ' + result[i]['text'] + '\n\n'
 
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [dict(text='Visualizza feedback di FindEAT', callback_data=7)]
