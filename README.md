@@ -23,7 +23,26 @@ Il progetto _FindEAT_ si pone come obbiettivi primari:
 
 -----------------------------------------------------
 ### FindEAT API ###
------------------------------------------------------
+
+Realizzazione di un API (GET ) alle API di Google e (POST) al database di Firebase di FindEAT e relativa documentazione:
+
+* Acquisizione di dati dei risturanti dalle API di Google
+
+
+  * Gli step dell'algoritmo per l'acquisizione dei dati dei ristoranti che poi verrano restituiti in formato JSON, sono i seguenti:
+
+  * Effettuata una richiesta HTTP per accedere ai dati desiderati
+  * Effettuato il parsing dei dati ricevuti 
+  * Manipolazione dei dati ottenuti 
+  * Restituisce il JSON
+* Gli step della POST sul database di Firebase sono i seguenti:
+  * Salva i feedback dell’utente
+  * Salva i  filtri dati dall’utente
+
+
+I dati vengono raccolti dalle API di Google attraverso dei parser. Essi estraggono i dati che vengono ristituiti in un formato standard (JSON). Una volta restituiti, abbiamo manipolato le informazioni in base alle nostre esigenze. Le API di Google ristituiscono solo 20 ristoranti nella zona ricercata, proprio per questo abbiamo deciso di fare 2 richieste: una secondo il luogo, un’altra diretta che ci permette di estrapolare le informazioni che non riuscivamo a prendere tramite la prima richiesta. 
+
+------------------------------------
 
 ### FindEAT_Bot ###
  <div> 
@@ -39,11 +58,13 @@ Abbiamo un solo semplice comando:
 ```
  
  Ovviamente il bot è una versione ‘lite’, schematizzata e molto semplice da utilizzare e gestire.
-  </div><br><br><br>
+  </div><br><br>
 
 ----------------------------------------------------------
 
 ### FindEAT (Client App) ###
+<div> 
+<a><img src='img/img3.png' height='250' align="left"/></a>
 Le caratteristiche dell' App sono le seguenti:
 
   * Cercare tramite zona o posizione i ristoranti
@@ -51,11 +72,15 @@ Le caratteristiche dell' App sono le seguenti:
   * Gestire nome, apertura/chiusura, numero di telefono, valutazione, eventuali orari nel caso il ristorante fosse chiuso e la posizione, come descritto nel bot
   * Gestire filtri e feedback di Google e di FindEAT
 
-FindEAT è un’applicazione Android, dove l’utente, può sempre sfruttare le ricerche comOltre al bot riportato sopra e nel bot, ma ha anche la possibilità di salvare i locali che l’utente preferisce e rimanere sempre aggiornato. Inoltre e non meno importante, l’applicazione si collega direttamente ai messaggi per poter prenotare tramite sms. L’applicazione è stata realizzata in Java e anch’essa si interfaccia con le API di FindEAT
+FindEAT è un’applicazione Android, dove l’utente, può sempre sfruttare le ricerche comOltre al bot riportato sopra e nel bot, ma ha anche la possibilità di salvare i locali che l’utente preferisce e rimanere sempre 
+
+<a><img src='img/img4.png' height='250' align="right"/></a>
+aggiornato. Inoltre e non meno importante, l’applicazione si collega direttamente ai messaggi per poter prenotare tramite sms. L’applicazione è stata realizzata in Java e anch’essa si interfaccia con le API di FindEAT
 
 ***UTILIZZALA ANCHE TUUU!!!*** *FindEAT i ristoranti a portata di App!!*
 
 Molto utile quando si è in vacanza o fuori casa, per trovare un ristorante comodo e alla portarta di qualsiasi utente!
+  </div><br><br>
 
 ----------------------------------------------------------
 ### Links e riferimenti ###

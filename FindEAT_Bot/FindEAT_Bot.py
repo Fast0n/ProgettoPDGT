@@ -270,30 +270,32 @@ def filtri(get, patch, request, check):
         n=int(result)
         result=firebase.patch(patch, {request: n+1})
 
-
 def cerca(luogo, msg):
-    content_type, chat_type, chat_id=telepot.glance(msg)
-    r=requests.get(
-        url = url_api + '?tipo=luogo&lista=' + luogo.lower())
-    json_data=r.json()
-    place[chat_id]=luogo.lower()
+    content_type, chat_type, chat_id = telepot.glance(msg)
+    r = requests.get(
+        url=url_api + '?tipo=luogo&lista=' + luogo.lower())
+    try:
+        json_data = r.json()
+        place[chat_id] = luogo.lower()
 
-    array=''
-    array1=''
-    for i in range(5):
-        nome=json_data['lista'][i]['nome']
-        placeid=json_data['lista'][i]['id']
-        array += str(i + 1) + ': ' + nome + '\n'
-        array1 += placeid + ','
+        array = ''
+        array1 = ''
+        for i in range(5):
+            nome = json_data['lista'][i]['nome']
+            placeid = json_data['lista'][i]['id']
+            array += str(i + 1) + ': ' + nome + '\n'
+            array1 += placeid + ','
 
-    place_id[chat_id]=array1.split(',')
+        place_id[chat_id] = array1.split(',')
 
-    markup=ReplyKeyboardMarkup(keyboard = [["Si", "No"]])
-    bot.sendMessage(
-        chat_id, array + "\nIl ristorante è nella lista?", reply_markup = markup)
+        markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+        bot.sendMessage(
+            chat_id, array + "\nIl ristorante è nella lista?", reply_markup=markup)
 
-    user_state[chat_id]=3
-
+        user_state[chat_id] = 3
+    except:
+        bot.sendMessage(
+            chat_id, "Locali non trovati/ Errore interno API, riscrivi il nome del locale")
 
 def on_callback_query(msg):
     query_id, from_id, query_data=telepot.glance(
