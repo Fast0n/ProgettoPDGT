@@ -4,10 +4,10 @@ public class Recent {
     private int id;
     private String record;
 
-    public Recent() {
+    Recent() {
     }
 
-    public Recent(int id, String record) {
+    Recent(int id, String record) {
         this.id = id;
         this.record = record;
     }

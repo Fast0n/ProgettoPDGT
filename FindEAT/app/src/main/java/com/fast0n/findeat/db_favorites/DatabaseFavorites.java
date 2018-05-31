@@ -1,6 +1,5 @@
 package com.fast0n.findeat.db_favorites;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -124,8 +123,16 @@ public class DatabaseFavorites extends SQLiteOpenHelper {
         int count = cursor.getCount();
         cursor.close();
 
-        // return count
         return count;
+    }
+
+    public int updateNote(Favorite record) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_RECORD, record.getRecord());
+
+        return db.update(TABLE_NAME, values, COLUMN_ID + " = ?", new String[] { String.valueOf(record.getId()) });
     }
 
     public void deleteRecord(Favorite record) {

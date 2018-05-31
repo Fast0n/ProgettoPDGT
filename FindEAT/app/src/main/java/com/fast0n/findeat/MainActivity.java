@@ -48,11 +48,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     MaterialSearchBar searchBar;
 
@@ -69,26 +69,25 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         mTitle.setText(toolbar.getTitle());
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(MainActivity.this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 1);
             return;
@@ -112,8 +111,6 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-
-
         suggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,19 +120,17 @@ public class MainActivity extends AppCompatActivity
 
                     try {
                         createRecord(searchBar.getText().toLowerCase());
+                    } catch (Exception ignored) {
                     }
-                    catch (Exception ignored){ }
 
                     Intent intent = new Intent(MainActivity.this, RestaurantsActivityList.class);
                     intent.putExtra("search", tvLocation.getText().toString().toLowerCase());
                     startActivity(intent);
                     suggestion.setVisibility(View.INVISIBLE);
-                }
-                else
-                    Toasty.error(MainActivity.this, "Nessuna connessione a internet", Toast.LENGTH_LONG).show();
+                } else
+                    Toasty.error(MainActivity.this, getString(R.string.unavailable), Toast.LENGTH_LONG).show();
             }
         });
-
 
         searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
@@ -154,17 +149,16 @@ public class MainActivity extends AppCompatActivity
 
                     try {
                         createRecord(searchBar.getText().toLowerCase());
+                    } catch (Exception ignored) {
                     }
-                    catch (Exception ignored){ }
 
                     intent.putExtra("search", searchBar.getText().toLowerCase());
                     startActivity(intent);
                     tvRecents.setVisibility(View.INVISIBLE);
                     recyclerView.setVisibility(View.INVISIBLE);
 
-                }
-                else
-                    Toasty.error(MainActivity.this, "Nessuna connessione a internet", Toast.LENGTH_LONG).show();
+                } else
+                    Toasty.error(MainActivity.this, getString(R.string.unavailable), Toast.LENGTH_LONG).show();
 
             }
 
@@ -174,14 +168,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mUnregistrar = KeyboardVisibilityEvent.registerEventListener(MainActivity.this, new KeyboardVisibilityEventListener() {
-            @Override
-            public void onVisibilityChanged(boolean isOpen) {
-                updateKeyboardStatusText(isOpen);
-            }
-        });
+        mUnregistrar = KeyboardVisibilityEvent.registerEventListener(MainActivity.this,
+                new KeyboardVisibilityEventListener() {
+                    @Override
+                    public void onVisibilityChanged(boolean isOpen) {
+                        updateKeyboardStatusText(isOpen);
+                    }
+                });
         updateKeyboardStatusText(KeyboardVisibilityEvent.isKeyboardVisible(MainActivity.this));
-
 
         try {
             get_position();
@@ -200,10 +194,8 @@ public class MainActivity extends AppCompatActivity
                             Intent intent = new Intent(MainActivity.this, RestaurantsActivityList.class);
                             intent.putExtra("search", luogo1.toLowerCase());
                             startActivity(intent);
-                        }
-                        else
-                            Toasty.error(MainActivity.this, "Nessuna connessione a internet", Toast.LENGTH_LONG).show();
-
+                        } else
+                            Toasty.error(MainActivity.this, getString(R.string.unavailable), Toast.LENGTH_LONG).show();
 
                     }
 
@@ -212,11 +204,8 @@ public class MainActivity extends AppCompatActivity
                         showActionsDialog(position);
                     }
 
-
                 }));
     }
-
-
 
     public void createRecord(String record) {
         long id = db.insertRecord(record);
@@ -263,8 +252,6 @@ public class MainActivity extends AppCompatActivity
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-
-
     private void updateKeyboardStatusText(boolean isOpen) {
 
         if (isOpen) {
@@ -278,7 +265,6 @@ public class MainActivity extends AppCompatActivity
                 tvRecents.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
             }
-
 
         }
 
@@ -300,9 +286,6 @@ public class MainActivity extends AppCompatActivity
         public void onLocationChanged(Location loc) {
             searchBar.setText("");
 
-            String longitude = "Longitude: " + loc.getLongitude();
-            String latitude = "Latitude: " + loc.getLatitude();
-
             String cityName = null;
             Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
             List<Address> addresses;
@@ -312,13 +295,9 @@ public class MainActivity extends AppCompatActivity
                     cityName = addresses.get(0).getLocality();
                     tvLocation.setText(cityName);
 
-
                 }
             } catch (IOException ignored) {
             }
-
-
-
 
         }
 
@@ -338,7 +317,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -356,7 +335,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -370,13 +348,12 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings){
+        if (id == R.id.action_settings) {
 
             Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
             startActivity(intent);
 
         }
-
 
         return super.onOptionsItemSelected(item);
     }
@@ -391,12 +368,12 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_info) {
 
-            Intent i = new Intent(MainActivity.this,InfoActivity.class);
+            Intent i = new Intent(MainActivity.this, InfoActivity.class);
             startActivity(i);
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

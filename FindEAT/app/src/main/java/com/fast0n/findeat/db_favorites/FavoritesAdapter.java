@@ -7,14 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.fast0n.findeat.R;
 
 import java.util.List;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyViewHolder> {
 
-    private Context context;
+    Context context;
     private List<Favorite> recordsList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -42,7 +41,8 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Favorite recent = recordsList.get(position);
 
-        String recordText = recent.getRecord().toUpperCase().charAt(0)+ recent.getRecord().substring(1, recent.getRecord().length());
+        String recordText = recent.getRecord().toUpperCase().charAt(0)
+                + recent.getRecord().substring(1, recent.getRecord().length());
         holder.record.setText(recordText);
 
     }

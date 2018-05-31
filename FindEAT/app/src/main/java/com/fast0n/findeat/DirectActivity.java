@@ -1,8 +1,10 @@
 package com.fast0n.findeat;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
@@ -16,7 +18,9 @@ public class DirectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direct);
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
 
         // java addresses
         searchBar = findViewById(R.id.searchBar);
@@ -25,9 +29,8 @@ public class DirectActivity extends AppCompatActivity {
         assert extras != null;
         final String luogo = extras.getString("search");
         final String title = luogo.toUpperCase().charAt(0) + luogo.substring(1, luogo.length());
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.app_name) + " " + title);
-
-
+        mTitle.setText(getString(R.string.app_name) + " " + title);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
@@ -36,7 +39,6 @@ public class DirectActivity extends AppCompatActivity {
 
             @Override
             public void onSearchConfirmed(CharSequence text) {
-
 
                 if (searchBar.getText().trim().length() > 0) {
 
@@ -61,5 +63,7 @@ public class DirectActivity extends AppCompatActivity {
         finish();
         Intent mainActivity = new Intent(DirectActivity.this, MainActivity.class);
         startActivity(mainActivity);
+
     }
+
 }

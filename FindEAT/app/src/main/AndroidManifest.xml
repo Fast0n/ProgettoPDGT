@@ -33,7 +33,6 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".DirectActivity" />
         <activity
             android:name=".TabsActivity"
             android:label="FindEAT"
@@ -41,16 +40,19 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".db_favorites.FavoritesActivity"
-            android:label="FindEAT - Preferiti" />
+            android:label="FindEAT - Preferiti"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".list_restaurants.RestaurantsActivityList"
-            android:label="@string/title_activity_restaurants_list"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".InfoActivity"
             android:label="@string/title_activity_info"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DirectActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

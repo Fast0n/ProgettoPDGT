@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "1082988330353",
+    "firebase_url": "https://findeatdb.firebaseio.com",
+    "project_id": "findeatdb",
+    "storage_bucket": "findeatdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082988330353:android:1a5242e4edba28f2",
+        "android_client_info": {
+          "package_name": "com.fast0n.findeat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1082988330353-t06fe2eqcc6jmpif8mkb233gkd1i0qti.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fast0n.findeat",
+            "certificate_hash": "2d9ed74733b3ebeb5973f224cf45123cd04a495d"
+          }
+        },
+        {
+          "client_id": "1082988330353-av9p3t414b6ohmm69o8i206sl1u0vb3f.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1082988330353-av9p3t414b6ohmm69o8i206sl1u0vb3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRU7qrxbu7eQxk1xaRmcGfm0xLuBL6Erg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1082988330353-av9p3t414b6ohmm69o8i206sl1u0vb3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

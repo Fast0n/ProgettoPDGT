@@ -46,12 +46,12 @@
 
                 <ImageView
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="top"
-                    android:background="@drawable/ic_counter"/>
-
+                    android:background="@drawable/ic_counter"
+                    tools:ignore="ContentDescription" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -59,10 +59,10 @@
                     android:layout_height="wrap_content">
                     <TextView
                         android:id="@+id/contatore"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         android:textColor="@android:color/black" />
 
                 </LinearLayout>
@@ -103,11 +103,13 @@
 
                 <ImageView
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="top"
-                    android:background="@drawable/ic_credit_card"/>
+                    android:background="@drawable/ic_credit_card"
+                    tools:ignore="ContentDescription" />
+
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -121,28 +123,27 @@
 
 
                         <TextView
-                            android:text="Pagamento con carta di credito"
-                            android:textSize="16dp"
+                            android:text="@string/tv_fragmentwo_cartadicredito"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:textColor="@android:color/black" />
 
                         <TextView
                             android:id="@+id/cartadicredito"
-                            android:textSize="16dp"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:textColor="@android:color/black" />
 
                     </LinearLayout>
 
                         <ProgressBar
                             android:id="@+id/progressCartadicredito"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             style="@android:style/Widget.ProgressBar.Horizontal"
-                            android:layout_centerInParent="true"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:max="100"
@@ -187,11 +188,13 @@
 
                 <ImageView
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="top"
-                    android:background="@drawable/ic_cash"/>
+                    android:background="@drawable/ic_cash"
+                    tools:ignore="ContentDescription" />
+
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -204,28 +207,27 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="Locale costoso"
-                            android:textSize="16dp"
+                            android:text="@string/tv_fragmentwo_costo"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:textColor="@android:color/black" />
 
                         <TextView
                             android:id="@+id/costo"
-                            android:textSize="16dp"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:textColor="@android:color/black" />
 
                     </LinearLayout>
 
                     <ProgressBar
                         android:id="@+id/progressCosto"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_centerInParent="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:max="100"
@@ -270,11 +272,13 @@
 
                 <ImageView
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="top"
-                    android:background="@drawable/ic_gluten_free"/>
+                    android:background="@drawable/ic_gluten_free"
+                    tools:ignore="ContentDescription" />
+
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -287,28 +291,27 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="Cibo senza glutine"
-                            android:textSize="16dp"
+                            android:text="@string/tv_fragmentwo_celiaci"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:textColor="@android:color/black" />
 
                         <TextView
-                            android:id="@+id/bambino"
-                            android:textSize="16dp"
+                            android:id="@+id/celiaci"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:textColor="@android:color/black" />
 
                     </LinearLayout>
 
                     <ProgressBar
-                        android:id="@+id/progressBambino"
-                        android:layout_marginLeft="5dp"
+                        android:id="@+id/progressCeliaci"
+                        android:layout_marginStart="5dp"
                         style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_centerInParent="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:max="100"
@@ -353,11 +356,12 @@
 
                 <ImageView
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="top"
-                    android:background="@drawable/ic_baby"/>
+                    android:background="@drawable/ic_baby"
+                    tools:ignore="ContentDescription" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -370,28 +374,27 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="Menu per bambini"
-                            android:textSize="16dp"
+                            android:text="@string/tv_fragmentwo_bambini"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:textColor="@android:color/black" />
 
                         <TextView
-                            android:id="@+id/celiaci"
-                            android:textSize="16dp"
+                            android:id="@+id/bambino"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:textColor="@android:color/black" />
 
                     </LinearLayout>
 
                     <ProgressBar
-                        android:id="@+id/progressCeliaci"
-                        android:layout_marginLeft="5dp"
+                        android:id="@+id/progressBambino"
+                        android:layout_marginStart="5dp"
                         style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_centerInParent="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:max="100"
@@ -411,7 +414,6 @@
             android:layout_height="wrap_content"
             android:scrollbars="vertical"/>
 
-
-
     </LinearLayout>
+
 </android.support.v4.widget.NestedScrollView>

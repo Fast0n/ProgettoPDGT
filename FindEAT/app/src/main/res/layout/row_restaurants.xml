@@ -40,34 +40,39 @@
 
 
             <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingLeft="5dp"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_title"/>
-
-            <TextView
-                android:id="@+id/nome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:paddingLeft="5dp"
-                android:orientation="horizontal">
+                android:paddingStart="5dp"
+                android:orientation="horizontal"
+                app:ignore="RtlSymmetry,UseCompoundDrawables">
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/ic_access_time"/>
+                    android:background="@drawable/ic_title"
+                    app:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/nome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingStart="5dp"
+                android:orientation="horizontal"
+                app:ignore="RtlSymmetry">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_access_time"
+                    app:ignore="ContentDescription" />
                 <TextView
                     android:id="@+id/apertura"
                     android:layout_marginLeft="5dp"
@@ -81,7 +86,8 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/ic_star_black"/>
+                    android:background="@drawable/ic_star_black"
+                    app:ignore="ContentDescription" />
 
                 <TextView android:id="@+id/valutazione"
                     android:layout_width="wrap_content"
@@ -95,21 +101,23 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:paddingLeft="5dp"
-                android:orientation="horizontal">
+                android:paddingStart="5dp"
+                android:orientation="horizontal"
+                app:ignore="RtlSymmetry,UseCompoundDrawables">
 
 
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/ic_location"/>
+                    android:background="@drawable/ic_location"
+                    app:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/indirizzo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:textColor="@android:color/black" />
 
             </LinearLayout>
@@ -118,8 +126,9 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:paddingLeft="5dp"
-                android:orientation="horizontal">
+                android:paddingStart="5dp"
+                android:orientation="horizontal"
+                app:ignore="RtlSymmetry">
 
 
                 <TextView
@@ -127,7 +136,7 @@
                     android:id="@+id/orari"
                     android:layout_width="1dp"
                     android:layout_height="1dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:textColor="@android:color/black" />
             </LinearLayout>
 

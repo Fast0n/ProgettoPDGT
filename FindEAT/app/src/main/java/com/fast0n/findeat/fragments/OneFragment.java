@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,10 +19,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.fast0n.findeat.MainActivity;
 import com.fast0n.findeat.R;
 import com.fast0n.findeat.db_favorites.DatabaseFavorites;
 import com.fast0n.findeat.db_favorites.Favorite;
-import com.fast0n.findeat.db_recents.Recent;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -40,7 +39,6 @@ public class OneFragment extends Fragment {
 
     List<Favorite> recordsList = new ArrayList<>();
     DatabaseFavorites db;
-
 
     public OneFragment() {
         // Required empty public constructor
@@ -64,11 +62,10 @@ public class OneFragment extends Fragment {
 
         db = new DatabaseFavorites(Objects.requireNonNull(getActivity()).getApplicationContext());
 
-
         final String getNome, getLuogo;
         final TextView tvName, tvNumtell, tvValutazione, tvSitoweb, tvIndirizzo, tvOrari;
         final FloatingActionButton fab, fab1, fab2;
-        final CardView click1,click2, click3, click4,click5, click6;
+        final CardView click1, click2, click3, click4, click5, click6;
         final ProgressBar loading;
 
         fab = view.findViewById(R.id.fab);
@@ -107,6 +104,17 @@ public class OneFragment extends Fragment {
 
                     @Override
                     public void onResponse(JSONObject response) {
+
+                        try {
+                            JSONObject json_raw = new JSONObject(response.toString());
+                            String listaorari = json_raw.getString("orari");
+                            JSONArray arraylistaorari = new JSONArray(listaorari);
+                            String listaListaOrari = arraylistaorari.getString(0);
+                            tvOrari.setText(listaListaOrari.replaceAll("\"", "").replaceAll("\\[|]", ""));
+                        } catch (JSONException e) {
+                            tvOrari.setText(getString(R.string.unavailable));
+                        }
+
                         try {
 
                             JSONObject json_raw = new JSONObject(response.toString());
@@ -116,46 +124,51 @@ public class OneFragment extends Fragment {
                             JSONArray arraylista = new JSONArray(lista);
                             String listaLista = arraylista.getString(0);
 
-                            try {
-                                JSONArray arraylistaorari = new JSONArray(listaorari);
-                                String listaListaOrari = arraylistaorari.getString(0);
-                                tvOrari.setText(listaListaOrari.replaceAll("\"", "").replaceAll("\\[|]", ""));
-                            } catch (NullPointerException e) {
-                                tvOrari.setText("Non disponibile");
-
-                            }
-
                             JSONObject scorroLista = new JSONObject(listaLista);
 
                             String getNome2 = scorroLista.getString("nome");
                             String getIndirizzo = scorroLista.getString("indirizzo");
                             String getValutazione = scorroLista.getString("valutazione");
-                            String getNumtell = scorroLista.getString("numtell").replace("null", "Non disponibile");
-                            String getApertura = scorroLista.getString("apertura").replace("null", "Non disponibile");
-                            String getSitoweb = scorroLista.getString("sitoweb").replace("null", "Non disponibile");
+                            String getNumtell = scorroLista.getString("numtell").replace("null", getString(R.string.unavailable));
+                            String getApertura = scorroLista.getString("apertura").replace("null", getString(R.string.unavailable));
+                            String getSitoweb = scorroLista.getString("sitoweb").replace("null", getString(R.string.unavailable));
 
                             if (getApertura.equals("Aperto")) {
-                                click1.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
-                                click2.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
-                                click3.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
-                                click4.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
-                                click5.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
-                                click6.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
+                                click1.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
+                                click2.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
+                                click3.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
+                                click4.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
+                                click5.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
+                                click6.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
 
                                 fab.setFabText("Aperto");
-                                fab.setFabColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
+                                fab.setFabColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
                                 fab.getLayoutParams().width = 300;
                             } else {
-                                click1.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
-                                click2.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
-                                click3.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
-                                click4.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
-                                click5.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
-                                click6.setCardBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
+                                click1.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
+                                click2.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
+                                click3.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
+                                click4.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
+                                click5.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
+                                click6.setCardBackgroundColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
 
                                 click6.setVisibility(View.VISIBLE);
                                 fab.setFabText("Chiuso");
-                                fab.setFabColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
+                                fab.setFabColor(
+                                        ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
                                 fab.getLayoutParams().width = 300;
                             }
 
@@ -172,12 +185,21 @@ public class OneFragment extends Fragment {
                     }
 
                 }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                int error_code = error.networkResponse.statusCode;
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        int error_code = error.networkResponse.statusCode;
 
-            }
-        });
+                        if (error_code == 503) {
+                            Intent intent = new Intent((Objects.requireNonNull(getActivity()).getApplicationContext()),
+                                    MainActivity.class);
+                            startActivity(intent);
+                            Toasty.error((Objects.requireNonNull(getActivity()).getApplicationContext()),
+                                    getString(R.string.error_api), Toast.LENGTH_LONG).show();
+
+                        }
+
+                    }
+                });
 
         // add it to the RequestQueue
         queue.add(getRequest);
@@ -187,12 +209,15 @@ public class OneFragment extends Fragment {
             public void onClick(View v) {
 
                 try {
-                    final String stringLuogo = getLuogo.toUpperCase().charAt(0) + getLuogo.substring(1, getLuogo.length());
+                    final String stringLuogo = getLuogo.toUpperCase().charAt(0)
+                            + getLuogo.substring(1, getLuogo.length());
                     createRecord(getNome + " - " + stringLuogo);
+                } catch (Exception ignored) {
                 }
-                catch (Exception ignored){ }
-                fab2.setFabIcon(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_favorite));
+                fab2.setFabIcon(
+                        ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_favorite));
                 fab.getLayoutParams().width = 300;
+
             }
         });
         fab1.setOnClickListener(new View.OnClickListener() {
@@ -208,7 +233,7 @@ public class OneFragment extends Fragment {
         click2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tvNumtell.getText().equals("Non disponibile")) {
+                if (!tvNumtell.getText().equals(getString(R.string.unavailable))) {
                     // fab1.setVisibility(View.VISIBLE);
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + tvNumtell.getText()));
@@ -220,7 +245,7 @@ public class OneFragment extends Fragment {
         click3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tvSitoweb.getText().equals("Non disponibile")) {
+                if (!tvSitoweb.getText().equals(getString(R.string.unavailable))) {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse((String) tvSitoweb.getText()));
                     startActivity(browserIntent);
                 }
@@ -230,7 +255,7 @@ public class OneFragment extends Fragment {
         click4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tvIndirizzo.getText().equals("Non disponibile")) {
+                if (!tvIndirizzo.getText().equals(getString(R.string.unavailable))) {
                     String url = "http://maps.google.com/maps?daddr=" + tvIndirizzo.getText();
                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(intent);
@@ -238,10 +263,14 @@ public class OneFragment extends Fragment {
             }
         });
 
-
-
     }
 
+    private void updateNote(String note, int position) {
+        Favorite n = recordsList.get(position);
+
+        System.out.println(n);
+
+    }
 
     private void createRecord(String favotite) {
         long id = db.insertRecord(favotite);

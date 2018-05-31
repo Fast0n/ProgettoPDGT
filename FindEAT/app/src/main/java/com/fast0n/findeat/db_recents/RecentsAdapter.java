@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.fast0n.findeat.R;
 
 import java.util.List;
@@ -17,10 +16,10 @@ public class RecentsAdapter extends RecyclerView.Adapter<RecentsAdapter.MyViewHo
     private Context context;
     private List<Recent> recordsList;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView record;
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView record;
 
-        public MyViewHolder(View view) {
+        MyViewHolder(View view) {
             super(view);
             record = view.findViewById(R.id.recent);
         }
@@ -42,7 +41,8 @@ public class RecentsAdapter extends RecyclerView.Adapter<RecentsAdapter.MyViewHo
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Recent recent = recordsList.get(position);
 
-        String recordText = recent.getRecord().toUpperCase().charAt(0)+ recent.getRecord().substring(1, recent.getRecord().length());
+        String recordText = recent.getRecord().toUpperCase().charAt(0)
+                + recent.getRecord().substring(1, recent.getRecord().length());
         holder.record.setText(recordText);
 
     }

@@ -1,5 +1,8 @@
 package com.fast0n.findeat.feedback_findeat;
 
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +22,16 @@ public class FeedbackFindEATAdapter extends RecyclerView.Adapter<FeedbackFindEAT
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView nome, ora, feedback;
-        public ImageView iconfeedback, iconrating;
+        public ImageView iconrating;
+        public CardView cardView;
 
-        public MyViewHolder(View view) {
+        MyViewHolder(View view) {
             super(view);
             nome = view.findViewById(R.id.nome);
             ora = view.findViewById(R.id.ora);
             feedback = view.findViewById(R.id.feedback);
-            iconfeedback = view.findViewById(R.id.iconfeedback);
             iconrating = view.findViewById(R.id.iconrating);
+            cardView = view.findViewById(R.id.cardView);
         }
     }
 
@@ -41,8 +45,8 @@ public class FeedbackFindEATAdapter extends RecyclerView.Adapter<FeedbackFindEAT
         holder.nome.setText(c.nome);
         holder.ora.setText(c.ora);
         holder.feedback.setText(c.feedback);
-
         holder.iconrating.setVisibility(View.GONE);
+        holder.cardView.setCardBackgroundColor(Color.BLACK);
     }
 
     @Override

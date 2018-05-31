@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-
-public class ThreeFragment extends Fragment{
+public class ThreeFragment extends Fragment {
 
     public ThreeFragment() {
         // Required empty public constructor
@@ -42,8 +41,7 @@ public class ThreeFragment extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.activity_fragment_three, container, false);
         String getNome, getLuogo;
@@ -53,7 +51,8 @@ public class ThreeFragment extends Fragment{
         recycler_view = view.findViewById(R.id.recycler_view);
 
         recycler_view.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(Objects.requireNonNull(getActivity()).getApplicationContext());
+        LinearLayoutManager llm = new LinearLayoutManager(
+                Objects.requireNonNull(getActivity()).getApplicationContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recycler_view.setLayoutManager(llm);
 
@@ -65,8 +64,6 @@ public class ThreeFragment extends Fragment{
         String cerca = "?tipo=diretto&lista=";
         String site_url = "https://progetto-pdgt.glitch.me/";
         String url = site_url + cerca + getNome + " " + getLuogo;
-
-
 
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
         url = url.replaceAll(" ", "%20");
@@ -94,7 +91,6 @@ public class ThreeFragment extends Fragment{
                                 String iconfeedback = scorroRistoranti.getString("profile_photo_url");
                                 String rating = scorroRistoranti.getString("rating");
 
-
                                 Calendar cal = Calendar.getInstance(Locale.ITALIAN);
                                 cal.setTimeInMillis(Integer.parseInt(ora) * 1000L);
                                 String date = DateFormat.format("dd/MM/yyyy", cal).toString();
@@ -108,17 +104,15 @@ public class ThreeFragment extends Fragment{
                         }
                     }
                 }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                int error_code = error.networkResponse.statusCode;
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        int error_code = error.networkResponse.statusCode;
 
-            }
-        });
+                    }
+                });
 
         // add it to the RequestQueue
         queue.add(getRequest);
-
-
 
         return view;
     }

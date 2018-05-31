@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".DirectActivity"
+    tools:showIn="@layout/activity_direct">
+
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        android:id="@+id/searchBar"
+        style="@style/MaterialSearchBarLight"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:paddingTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:mt_backIconTint="@color/black"
+        app:mt_clearIconTint="@color/black"
+        app:mt_hintColor="@android:color/black"
+        app:mt_hint=""
+        app:mt_placeholder="Inserisci il nome del ristorante"
+        app:mt_placeholderColor="@android:color/black"
+        app:mt_searchIconTint="@color/black"
+        app:mt_speechMode="false" />
+
+</android.support.constraint.ConstraintLayout>

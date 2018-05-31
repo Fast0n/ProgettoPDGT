@@ -1,4 +1,5 @@
 package com.fast0n.findeat;
+
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,10 +18,8 @@ import com.fast0n.findeat.fragments.TwoFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class TabsActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -28,16 +27,16 @@ public class TabsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabs);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
@@ -50,12 +49,10 @@ public class TabsActivity extends AppCompatActivity {
         tabOne.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_title, 0, 0, 0);
         tabLayout.getTabAt(0).setCustomView(tabOne);
 
-
         TextView tabTwo = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
         tabTwo.setText("Feedback FindEAT");
         tabTwo.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_feedback, 0, 0, 0);
         tabLayout.getTabAt(1).setCustomView(tabTwo);
-
 
         TextView tabThree = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
         tabThree.setText("Feedback Google");
@@ -102,7 +99,5 @@ public class TabsActivity extends AppCompatActivity {
         }
 
     }
-
-
 
 }

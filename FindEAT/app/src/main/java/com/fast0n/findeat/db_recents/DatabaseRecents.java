@@ -11,14 +11,10 @@ import java.util.List;
 
 public class DatabaseRecents extends SQLiteOpenHelper {
 
-    public static final String COLUMN_ID = "id";
-    public static final String TABLE_NAME = "records";
-    public static final String COLUMN_RECORD = "recent";
-
-    // Database Version
+    static final String COLUMN_ID = "id";
+    static final String TABLE_NAME = "records";
+    static final String COLUMN_RECORD = "recent";
     private static final int DATABASE_VERSION = 1;
-
-    // Database Name
     private static final String DATABASE_NAME = "db_recents";
 
     public DatabaseRecents(Context context) {

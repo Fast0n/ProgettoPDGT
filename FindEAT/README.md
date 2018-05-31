@@ -13,7 +13,7 @@ App android per la visualizzazione dei locali/ristoranti/pizzerie nella tua loca
 Con licenza GPLv3: http://www.gnu.org/licenses/gpl-3.0.html
 
 ## Screenshots
-<a><img src='https://s26.postimg.cc/5jvnn54tl/image.png' height='400' alt='icon'/></a><a><img src='https://s26.postimg.cc/5jvnn5cjd/image.png' height='400' alt='icon'/></a><a><img src='https://s26.postimg.cc/xjzr7fnpl/image.png' height='400' alt='icon'/></a>
+<a><img src='https://s26.postimg.cc/5jvnn54tl/image.png' height='400' alt='icon'/></a><a><img src='https://raw.githubusercontent.com/Fast0n/ProgettoPDGT/master/img/img3.png' height='400' alt='icon'/></a><a><img src='https://raw.githubusercontent.com/Fast0n/ProgettoPDGT/master/img/img4.png' height='400' alt='icon'/></a>
 
 <!-- Markdown link & img dfn's -->
 [travis-image]: https://travis-ci.org/Fast0n/WifiView.svg?branch=master

@@ -25,7 +25,24 @@
     <string name="title_activity_restaurants_list">RestaurantsListActivity</string>
     <string name="title_activity_info">Informazioni</string>
     <string name="version">Versione</string>
-
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="btn_feedback">Invia feedback</string>
+    <string name="btn_dialog_bambino">Il ristorante prevede un menu per bambini?</string>
+    <string name="btn_dialog_celiaci">Il ristorante prevede un menu senza glutine?</string>
+    <string name="btn_dialog_costo">Il ristorante è costoso?</string>
+    <string name="btn_dialog_cartadicredito">Si può pagare con carte di credito?</string>
+    <string name="tv_dialog_name">Nome e cognome</string>
+    <string name="tv_dialog_feedback">Feedback</string>
+    <string name="tv_fragmentwo_cartadicredito">Pagamento con carta di credito</string>
+    <string name="tv_fragmentwo_costo">Locale costoso</string>
+    <string name="tv_fragmentwo_celiaci">Cibo senza glutine</string>
+    <string name="tv_fragmentwo_bambini">Menu per bambini</string>
+    <string name="tv_info_sourcecode">Codice Sorgente</string>
+    <string name="tv_menu">Menu</string>
+    <string name="noConnection">Nessuna connessione a internet</string>
+    <string name="unavailable">Non disponibile</string>
+    <string name="error_api">Errore API... riprova</string>
 
 
 </resources>

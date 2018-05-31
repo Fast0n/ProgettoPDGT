@@ -44,7 +44,7 @@ public class FeedbackGoogleAdapter extends RecyclerView.Adapter<FeedbackGoogleAd
 
         if (c.rating.equals("1"))
             Picasso.get().load(R.drawable.rating_1).into(holder.iconrating);
-       else if (c.rating.equals("2"))
+        else if (c.rating.equals("2"))
             Picasso.get().load(R.drawable.rating_2).into(holder.iconrating);
         else if (c.rating.equals("3"))
             Picasso.get().load(R.drawable.rating_3).into(holder.iconrating);
