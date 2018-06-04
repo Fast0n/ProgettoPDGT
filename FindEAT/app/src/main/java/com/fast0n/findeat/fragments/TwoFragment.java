@@ -42,7 +42,6 @@ import java.util.concurrent.TimeUnit;
 
 import es.dmoral.toasty.Toasty;
 
-
 public class TwoFragment extends Fragment {
 
     public TwoFragment() {
@@ -74,7 +73,6 @@ public class TwoFragment extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recycler_view.setLayoutManager(llm);
 
-        // java addresses
         tvCounter = view.findViewById(R.id.contatore);
         tvCartadicredito = view.findViewById(R.id.cartadicredito);
         tvCosto = view.findViewById(R.id.costo);
@@ -118,8 +116,7 @@ public class TwoFragment extends Fragment {
                         databaseRef.child("filters").child(getLuogo).child(getNome).child("contatore").child("0")
                                 .setValue(String.valueOf(++piu));
                         counter[0] = false;
-                        tvCounter.setText(getString(R.string.tvCounter_one) +" " + String.valueOf(piu)
-                                + " " +getString(R.string.tvCounter_two));
+                        tvCounter.setText("Cercato " + String.valueOf(piu) + " volte");
 
                     } else {
                         databaseRef.child("filters").child(getLuogo).child(getNome).child("cartadicredito")
@@ -141,7 +138,7 @@ public class TwoFragment extends Fragment {
                         databaseRef.child("filters").child(getLuogo).child(getNome).child("contatore").child("0")
                                 .setValue(1);
                         counter[0] = false;
-                        tvCounter.setText(R.string.tvCounter);
+                        tvCounter.setText("Cercato 1 volta");
                     }
 
                 }
@@ -176,7 +173,8 @@ public class TwoFragment extends Fragment {
                             cal.setTimeInMillis(Integer.parseInt(time) * 1000L);
                             String date = DateFormat.format("dd/MM/yyyy", cal).toString();
                             feedbackList.add(new Feedback(author_name, date, text, "", ""));
-                            FeedbackFindEATAdapter ca = new FeedbackFindEATAdapter(getActivity(),feedbackList);
+
+                            FeedbackFindEATAdapter ca = new FeedbackFindEATAdapter( Objects.requireNonNull(getActivity()).getApplicationContext(), feedbackList);
                             recycler_view.setAdapter(ca);
                             read_feedback[0] = false;
                         }
@@ -217,6 +215,7 @@ public class TwoFragment extends Fragment {
                             String stringCartadicredito = String.valueOf(ds.child(getLuogo).child(getNome)
                                     .child("cartadicredito").child("votisi").getValue());
 
+                            if (!stringCartadicredito.equals("null")) {
 
                                 String stringCartadicredito1 = String.valueOf(ds.child(getLuogo).child(getNome)
                                         .child("cartadicredito").child("votino").getValue());
@@ -236,15 +235,16 @@ public class TwoFragment extends Fragment {
                                 String stringBambino1 = String.valueOf(ds.child(getLuogo).child(getNome).child("menu")
                                         .child("1").child("bambino").child("votino").getValue());
 
+                                tvCartadicredito.setText(stringCartadicredito + " voti per 'Si' su "
+                                        + stringCartadicredito1 + " voti su 'No'");
+                                tvCosto.setText(
+                                        stringCosto + " voti per 'Basso' su " + stringCosto1 + " voti su 'Alto'");
+                                tvCeliaci.setText(
+                                        stringCeliaci + " voti per 'Si' su " + stringCeliaci1 + " voti su 'No'");
+                                tvBambino.setText(
+                                        stringBambino + " voti per 'Si' su " + stringBambino1 + " voti su 'No'");
+
                                 try {
-                                    tvCartadicredito.setText(stringCartadicredito + " "+getString(R.string.si)+", "
-                                            + stringCartadicredito1 + " " + getString(R.string.no));
-                                    tvCosto.setText(stringCosto + " "+getString(R.string.si)+", "
-                                            + stringCosto1 + " " + getString(R.string.no));
-                                    tvCeliaci.setText(stringCeliaci + " "+getString(R.string.si)+", "
-                                            + stringCeliaci1 + " " + getString(R.string.no));
-                                    tvBambino.setText(stringBambino + " "+getString(R.string.si)+", "
-                                            + stringBambino1 + " " + getString(R.string.no));
 
                                     double a = Double.parseDouble(stringCartadicredito);
                                     double b = Double.parseDouble(stringCartadicredito1);
@@ -277,6 +277,7 @@ public class TwoFragment extends Fragment {
 
                                 }
 
+                            }
 
                         }
 
@@ -302,12 +303,10 @@ public class TwoFragment extends Fragment {
                 final AlertDialog dialog = mBuilder.create();
                 dialog.show();
 
-                final Button button;
+                Button button = mView.findViewById(R.id.button);
                 final EditText editText, editText1;
                 final CheckBox checkBox, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8;
 
-                // java addresses
-                button = mView.findViewById(R.id.button);
                 checkBox = mView.findViewById(R.id.checkBox);
                 checkBox2 = mView.findViewById(R.id.checkBox2);
                 checkBox3 = mView.findViewById(R.id.checkBox3);
@@ -407,7 +406,7 @@ public class TwoFragment extends Fragment {
                     public void onClick(View v) {
 
                         if (editText1.getText().length() == 0) {
-                            Toasty.error(Objects.requireNonNull(getActivity()).getApplicationContext(), getString(R.string.toasty_null),
+                            Toasty.error(Objects.requireNonNull(getActivity()).getApplicationContext(), "Testo breve",
                                     Toast.LENGTH_LONG).show();
                         }
 
