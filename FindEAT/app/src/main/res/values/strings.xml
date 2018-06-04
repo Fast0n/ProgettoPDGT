@@ -1,48 +1,71 @@
 <resources>
-    <string name="app_name">FindEAT</string>
-    <string name="recent">Recenti</string>
-    <string name="search_box">Inserisci la tua posizione</string>
-    <string name="search_box_title">Cerca ristorante a…</string>
+    <string translatable="false" name="app_name">FindEAT</string>
+    <string name="site_url">https://progetto-pdgt.glitch.me/</string>
 
+    <!-- main_warning -->
+    <string name="warning">Attenzione</string>
+    <string name="warning_content">Si prega di abilitare il GPS dalle impostazioni</string>
+    <string name="cancel">Annulla</string>
+    <string name="settings">Impostazioni</string>
 
-    <string name="warning">Warning</string>
-    <string name="warning_content">Please enabled GPS from settings</string>
-    <string name="cancel">Cancel</string>
-    <string name="settings">Settings</string>
-    <string name="title_activity_restorants">RestorantsActivity</string>
-
-    <string name="delete">Cancella</string>
-    <string name="sure">Sei sicuro?</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="title_activity_fragment_two">FragmentTwoActivity</string>
-    <string name="title_activity_fragment_three">activity_fragment_three</string>
+    <!-- MainActivity -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_restaurants_list">RestaurantsListActivity</string>
+    <string name="search_box">Inserisci la tua posizione</string>
+    <string name="search_box_title">Cerca ristorante a…</string>
+    <string name="recent">Recenti</string>
+    <string name="menu_item_1">Cerca risporante</string>
+    <string name="menu_item_2">Informazioni</string>
+    <string name="menu_item_3">Preferiti</string>
+    <string name="noConnection">Nessuna connessione a internet</string>
+    <string name="error_api">Errore API… riprova</string>
+
+    <!-- delete_recent -->
+    <string name="sure">Sei sicuro?</string>
+    <string name="delete">Cancella</string>
+
+    <!-- InfoActivity -->
     <string name="title_activity_info">Informazioni</string>
     <string name="version">Versione</string>
-    <string name="si">Si</string>
-    <string name="no">No</string>
-    <string name="btn_feedback">Invia feedback</string>
-    <string name="btn_dialog_bambino">Il ristorante prevede un menu per bambini?</string>
-    <string name="btn_dialog_celiaci">Il ristorante prevede un menu senza glutine?</string>
-    <string name="btn_dialog_costo">Il ristorante è costoso?</string>
-    <string name="btn_dialog_cartadicredito">Si può pagare con carte di credito?</string>
-    <string name="tv_dialog_name">Nome e cognome</string>
-    <string name="tv_dialog_feedback">Feedback</string>
+    <string name="tv_info_sourcecode">Codice Sorgente</string>
+    <string name="tv_menu">Menu</string>
+
+    <!-- ListRestaurantsActivity -->
+    <string name="tvTSnackbar">Non trovi il ristorante?</string>
+    <string name="btnTSnackbar">Clicca qui</string>
+    <string name="tvtitle">Non trovi il ristorante? Clicca qui</string>
+
+    <!-- FragmentsActivity -->
+    <string name="title_tab">Info Ristorante</string>
+    <string name="fab_open">Aperto</string>
+    <string name="fab_close">Chiuso</string>
+    <string name="unavailable">Non disponibile</string>
+    <string name="add_favorites">Aggiunto ai preferiti</string>
+    <string name="sms_body">Salve, la contatto per avere delle informazioni</string>
+
+    <!-- TAB 1 -->
+    <string name="title_tab2">Feedback FindEAT</string>
+    <string name="tvCounter">Cercato 1 volta</string>
+    <string name="tvCounter_one">Cercato</string>
+    <string name="tvCounter_two">volte</string>
     <string name="tv_fragmentwo_cartadicredito">Pagamento con carta di credito</string>
     <string name="tv_fragmentwo_costo">Locale costoso</string>
     <string name="tv_fragmentwo_celiaci">Cibo senza glutine</string>
     <string name="tv_fragmentwo_bambini">Menu per bambini</string>
-    <string name="tv_info_sourcecode">Codice Sorgente</string>
-    <string name="tv_menu">Menu</string>
-    <string name="noConnection">Nessuna connessione a internet</string>
-    <string name="unavailable">Non disponibile</string>
-    <string name="error_api">Errore API... riprova</string>
 
+    <!-- TAB 2 -->
+    <string name="tv_dialog_name">Nome e cognome</string>
+    <string name="tv_dialog_feedback">Feedback</string>
+    <string name="btn_dialog_cartadicredito">Si può pagare con carte di credito?</string>
+    <string name="btn_dialog_costo">Il ristorante è costoso?</string>
+    <string name="btn_dialog_celiaci">Il ristorante prevede un menu senza glutine?</string>
+    <string name="btn_dialog_bambino">Il ristorante prevede un menu per bambini?</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="toasty_null">Testo breve</string>
+    <string name="btn_feedback">Invia feedback</string>
+
+    <!-- TAB 3 -->
+    <string name="title_tab3">Feedback Google</string>
 
 </resources>

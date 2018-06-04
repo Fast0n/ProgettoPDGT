@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         app:fabIcon="@drawable/ic_add"
         app:fabSizes="normal"
+        app:fabColor="@color/feedback"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp" />
 

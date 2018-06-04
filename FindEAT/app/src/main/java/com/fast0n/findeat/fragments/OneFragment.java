@@ -41,7 +41,6 @@ public class OneFragment extends Fragment {
     DatabaseFavorites db;
 
     public OneFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -68,10 +67,10 @@ public class OneFragment extends Fragment {
         final CardView click1, click2, click3, click4, click5, click6;
         final ProgressBar loading;
 
+        // java addresses
         fab = view.findViewById(R.id.fab);
         fab1 = view.findViewById(R.id.fab1);
         fab2 = view.findViewById(R.id.fab2);
-
         tvName = view.findViewById(R.id.nome);
         tvNumtell = view.findViewById(R.id.numtell);
         tvSitoweb = view.findViewById(R.id.sitoweb);
@@ -93,7 +92,7 @@ public class OneFragment extends Fragment {
         getLuogo = extras.getString("luogo");
 
         String cerca = "?tipo=diretto&lista=";
-        String site_url = "https://progetto-pdgt.glitch.me/";
+        String site_url = getString(R.string.site_url);
         String url = site_url + cerca + getNome + " " + getLuogo;
 
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
@@ -129,11 +128,14 @@ public class OneFragment extends Fragment {
                             String getNome2 = scorroLista.getString("nome");
                             String getIndirizzo = scorroLista.getString("indirizzo");
                             String getValutazione = scorroLista.getString("valutazione");
-                            String getNumtell = scorroLista.getString("numtell").replace("null", getString(R.string.unavailable));
-                            String getApertura = scorroLista.getString("apertura").replace("null", getString(R.string.unavailable));
-                            String getSitoweb = scorroLista.getString("sitoweb").replace("null", getString(R.string.unavailable));
+                            String getNumtell = scorroLista.getString("numtell").replace("null",
+                                    getString(R.string.unavailable));
+                            String getApertura = scorroLista.getString("apertura").replace("null",
+                                    getString(R.string.unavailable));
+                            String getSitoweb = scorroLista.getString("sitoweb").replace("null",
+                                    getString(R.string.unavailable));
 
-                            if (getApertura.equals("Aperto")) {
+                            if (getApertura.equals(getString(R.string.fab_open))) {
                                 click1.setCardBackgroundColor(
                                         ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
                                 click2.setCardBackgroundColor(
@@ -147,7 +149,7 @@ public class OneFragment extends Fragment {
                                 click6.setCardBackgroundColor(
                                         ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
 
-                                fab.setFabText("Aperto");
+                                fab.setFabText(getString(R.string.fab_open));
                                 fab.setFabColor(
                                         ContextCompat.getColor(getActivity().getApplicationContext(), R.color.aperto));
                                 fab.getLayoutParams().width = 300;
@@ -166,7 +168,7 @@ public class OneFragment extends Fragment {
                                         ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
 
                                 click6.setVisibility(View.VISIBLE);
-                                fab.setFabText("Chiuso");
+                                fab.setFabText(getString(R.string.fab_close));
                                 fab.setFabColor(
                                         ContextCompat.getColor(getActivity().getApplicationContext(), R.color.chiuso));
                                 fab.getLayoutParams().width = 300;
@@ -207,6 +209,8 @@ public class OneFragment extends Fragment {
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toasty.success((Objects.requireNonNull(getActivity()).getApplicationContext()),
+                        getString(R.string.add_favorites), Toast.LENGTH_LONG).show();
 
                 try {
                     final String stringLuogo = getLuogo.toUpperCase().charAt(0)
@@ -225,7 +229,7 @@ public class OneFragment extends Fragment {
             public void onClick(View v) {
                 Uri uri = Uri.parse("smsto:" + tvNumtell.getText());
                 Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-                it.putExtra("sms_body", "Salve la contatto per avere delle informazioni\n");
+                it.putExtra("sms_body", getString(R.string.sms_body));
                 startActivity(it);
             }
         });
@@ -234,7 +238,6 @@ public class OneFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!tvNumtell.getText().equals(getString(R.string.unavailable))) {
-                    // fab1.setVisibility(View.VISIBLE);
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + tvNumtell.getText()));
                     startActivity(intent);

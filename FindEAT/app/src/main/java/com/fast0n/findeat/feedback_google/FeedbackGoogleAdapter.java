@@ -21,8 +21,9 @@ public class FeedbackGoogleAdapter extends RecyclerView.Adapter<FeedbackGoogleAd
         public TextView nome, ora, feedback;
         public ImageView iconfeedback, iconrating;
 
-        public MyViewHolder(View view) {
+        MyViewHolder(View view) {
             super(view);
+            // java addresses
             nome = view.findViewById(R.id.nome);
             ora = view.findViewById(R.id.ora);
             feedback = view.findViewById(R.id.feedback);

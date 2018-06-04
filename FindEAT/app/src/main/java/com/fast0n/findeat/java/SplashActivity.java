@@ -34,7 +34,7 @@ public class SplashActivity extends AppCompatActivity {
                 SplashActivity.this.finish();
                 showSystemUI();
             }
-        }, 3000);
+        }, 4000);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +29,11 @@ import com.fast0n.findeat.DirectActivity;
 import com.fast0n.findeat.MainActivity;
 import com.fast0n.findeat.R;
 import com.fast0n.findeat.java.RecyclerItemListener;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +51,9 @@ public class RestaurantsActivityList extends AppCompatActivity {
     ProgressBar loading;
     private List<DataRestaurants> countryList = new ArrayList<>();
     RecyclerView recyclerView;
+    AdView mAdView;
+    InterstitialAd mInterstitialAd;
+    CardView click1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +69,33 @@ public class RestaurantsActivityList extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
+        // java addresses
+        mAdView = findViewById(R.id.adView);
         recyclerView = findViewById(R.id.recycler_view);
         loading = findViewById(R.id.progressBar);
         loading.setVisibility(View.VISIBLE);
+        click1 = findViewById(R.id.click1);
+
+
         final Bundle extras = getIntent().getExtras();
         assert extras != null;
         luogo = extras.getString("search");
+
+        // banner && interstitialAd
+        MobileAds.initialize(this, "ca-app-pub-9646303341923759~9003031985");
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-9646303341923759/8129894435");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+        });
 
         final String title = luogo.toUpperCase().charAt(0) + luogo.substring(1, luogo.length());
         mTitle.setText(getString(R.string.app_name) + " - " + title);
@@ -76,10 +106,21 @@ public class RestaurantsActivityList extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         String cerca = "?tipo=luogo&lista=";
-        String site_url = "https://progetto-pdgt.glitch.me/";
+        String site_url = getString(R.string.site_url);
         String url = site_url + cerca + luogo;
 
         createList(url);
+
+        click1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent mainActivity = new Intent(RestaurantsActivityList.this,
+                        DirectActivity.class);
+                mainActivity.putExtra("search", title.toLowerCase());
+                startActivity(mainActivity);
+            }
+        });
 
         recyclerView.addOnItemTouchListener(new RecyclerItemListener(getApplicationContext(), recyclerView,
                 new RecyclerItemListener.RecyclerTouchListener() {
@@ -110,8 +151,8 @@ public class RestaurantsActivityList extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy < 0) {
                     TSnackbar snackbar = TSnackbar
-                            .make(findViewById(android.R.id.content), "Non trovi il ristorante?", TSnackbar.LENGTH_LONG)
-                            .setAction("Clicca qui", new View.OnClickListener() {
+                            .make(findViewById(android.R.id.content), R.string.tvTSnackbar, TSnackbar.LENGTH_LONG)
+                            .setAction(R.string.btnTSnackbar, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
 
@@ -154,6 +195,10 @@ public class RestaurantsActivityList extends AppCompatActivity {
                             JSONArray arraylista = new JSONArray(lista);
 
                             int nElementi = Integer.parseInt(String.valueOf(arraylista.length())) - 1;
+
+                            if (nElementi <= 5){
+                                click1.setVisibility(View.VISIBLE);
+                            }
 
                             for (int i = 0; i < nElementi; i++) {
                                 String ristoranti = arraylista.getString(i);

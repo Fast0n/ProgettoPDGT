@@ -30,7 +30,7 @@
             app:layout_constraintVertical_bias="0.02"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="2dp"
-            card_view:cardBackgroundColor="@color/colorAccent">
+            card_view:cardBackgroundColor="@color/feedback">
 
             <LinearLayout
                 android:gravity="center"
@@ -87,7 +87,7 @@
             app:layout_constraintVertical_bias="0.02"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="2dp"
-            card_view:cardBackgroundColor="@color/colorAccent">
+            card_view:cardBackgroundColor="@color/feedback">
 
             <LinearLayout
                 android:gravity="center"
@@ -147,7 +147,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:max="100"
-                            android:progressDrawable="@drawable/progress_drawable" />
+                            android:progressDrawable="@drawable/progress_bar" />
 
 
                 </LinearLayout>
@@ -172,7 +172,7 @@
             app:layout_constraintVertical_bias="0.02"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="2dp"
-            card_view:cardBackgroundColor="@color/colorAccent">
+            card_view:cardBackgroundColor="@color/feedback">
 
             <LinearLayout
                 android:gravity="center"
@@ -231,7 +231,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:max="100"
-                        android:progressDrawable="@drawable/progress_drawable" />
+                        android:progressDrawable="@drawable/progress_bar" />
 
 
                 </LinearLayout>
@@ -256,7 +256,7 @@
             app:layout_constraintVertical_bias="0.02"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="2dp"
-            card_view:cardBackgroundColor="@color/colorAccent">
+            card_view:cardBackgroundColor="@color/feedback">
 
             <LinearLayout
                 android:gravity="center"
@@ -315,7 +315,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:max="100"
-                        android:progressDrawable="@drawable/progress_drawable" />
+                        android:progressDrawable="@drawable/progress_bar" />
 
 
                 </LinearLayout>
@@ -340,7 +340,7 @@
             app:layout_constraintVertical_bias="0.02"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="2dp"
-            card_view:cardBackgroundColor="@color/colorAccent">
+            card_view:cardBackgroundColor="@color/feedback">
 
             <LinearLayout
                 android:gravity="center"
@@ -398,7 +398,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:max="100"
-                        android:progressDrawable="@drawable/progress_drawable" />
+                        android:progressDrawable="@drawable/progress_bar" />
 
 
                 </LinearLayout>

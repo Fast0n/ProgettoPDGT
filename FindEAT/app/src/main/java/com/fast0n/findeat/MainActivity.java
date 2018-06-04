@@ -1,16 +1,12 @@
 package com.fast0n.findeat;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -18,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -34,6 +31,7 @@ import android.widget.Toast;
 
 import com.fast0n.findeat.db_favorites.FavoritesActivity;
 import com.fast0n.findeat.db_recents.Recent;
+import com.fast0n.findeat.java.GPSTracker;
 import com.fast0n.findeat.java.RecyclerItemListener;
 import com.fast0n.findeat.list_restaurants.RestaurantsActivityList;
 import com.fast0n.findeat.db_recents.DatabaseRecents;
@@ -84,17 +82,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(MainActivity.this,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 1);
-            return;
-        } else {
-            // Write you code here if permission already given.
-        }
-
         // java addresses
         searchBar = findViewById(R.id.searchBar);
         tvRecents = findViewById(R.id.recents);
@@ -126,19 +113,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Intent intent = new Intent(MainActivity.this, RestaurantsActivityList.class);
                     intent.putExtra("search", tvLocation.getText().toString().toLowerCase());
                     startActivity(intent);
-                    suggestion.setVisibility(View.INVISIBLE);
+                    suggestion.setVisibility(View.GONE);
                 } else
-                    Toasty.error(MainActivity.this, getString(R.string.unavailable), Toast.LENGTH_LONG).show();
+                    Toasty.error(MainActivity.this, getString(R.string.noConnection), Toast.LENGTH_LONG).show();
             }
         });
+
+        show_gps();
 
         searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
-                searchBar.clearSuggestions();
-                tvRecents.setVisibility(View.INVISIBLE);
-                recyclerView.setVisibility(View.INVISIBLE);
-                suggestion.setVisibility(View.VISIBLE);
+
+                if (isOnline()) {
+                    searchBar.clearSuggestions();
+                    show_gps();
+                } else {
+                    Toasty.error(MainActivity.this, getString(R.string.noConnection), Toast.LENGTH_LONG).show();
+
+                }
             }
 
             @Override
@@ -158,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     recyclerView.setVisibility(View.INVISIBLE);
 
                 } else
-                    Toasty.error(MainActivity.this, getString(R.string.unavailable), Toast.LENGTH_LONG).show();
+                    Toasty.error(MainActivity.this, getString(R.string.noConnection), Toast.LENGTH_LONG).show();
 
             }
 
@@ -177,12 +170,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
         updateKeyboardStatusText(KeyboardVisibilityEvent.isKeyboardVisible(MainActivity.this));
 
-        try {
-            get_position();
-
-        } catch (Exception ignored) {
-        }
-
         recyclerView.addOnItemTouchListener(new RecyclerItemListener(getApplicationContext(), recyclerView,
                 new RecyclerItemListener.RecyclerTouchListener() {
                     public void onClickItem(View arg1, int position) {
@@ -195,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             intent.putExtra("search", luogo1.toLowerCase());
                             startActivity(intent);
                         } else
-                            Toasty.error(MainActivity.this, getString(R.string.unavailable), Toast.LENGTH_LONG).show();
+                            Toasty.error(MainActivity.this, getString(R.string.noConnection), Toast.LENGTH_LONG).show();
 
                     }
 
@@ -256,62 +243,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (isOpen) {
             suggestion.setVisibility(View.VISIBLE);
+            tvRecents.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
         } else {
-            suggestion.setVisibility(View.INVISIBLE);
+            suggestion.setVisibility(View.GONE);
             if (db.getRecordsCount() > 0) {
                 tvRecents.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.VISIBLE);
             } else {
-                tvRecents.setVisibility(View.INVISIBLE);
-                recyclerView.setVisibility(View.INVISIBLE);
+                tvRecents.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+
             }
 
         }
 
     }
 
-    @SuppressLint("MissingPermission")
-    public void get_position() {
+    public void show_gps() {
+        GPSTracker gps = new GPSTracker(this);
+        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 1);
+        } else {
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new MainActivity.MyLocationListener();
+            gps = new GPSTracker(MainActivity.this);
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+            if (gps.canGetLocation()) {
 
-    }
+                double latitude = gps.getLatitude();
+                double longitude = gps.getLongitude();
 
-    private class MyLocationListener implements LocationListener {
+                geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                List<Address> addresses = null;
 
-        @Override
-        public void onLocationChanged(Location loc) {
-            searchBar.setText("");
+                try {
+                    addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
-            String cityName = null;
-            Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-            List<Address> addresses;
-            try {
-                addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
-                if (addresses.size() > 0) {
-                    cityName = addresses.get(0).getLocality();
-                    tvLocation.setText(cityName);
+                    if (addresses != null && !addresses.isEmpty()) {
 
+                        String location = addresses.get(0).getLocality();
+
+                        Log.e("Errr", location);
+                        tvLocation.setText(location);
+
+                    }
+
+                } catch (IOException ignored) {
                 }
-            } catch (IOException ignored) {
+
+            } else {
+
+                gps.showSettingsAlert();
             }
 
         }
 
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
     }
 
     @Override
@@ -338,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main2, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -348,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_favorites) {
 
             Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
             startActivity(intent);

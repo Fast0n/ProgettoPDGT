@@ -7,7 +7,7 @@ public class DataRestaurants {
     public String valutazione;
     public String indirizzo;
 
-    public DataRestaurants(String nome, String apertura, String valutazione, String indirizzo) {
+    DataRestaurants(String nome, String apertura, String valutazione, String indirizzo) {
         this.nome = nome;
         this.apertura = apertura;
         this.valutazione = valutazione;

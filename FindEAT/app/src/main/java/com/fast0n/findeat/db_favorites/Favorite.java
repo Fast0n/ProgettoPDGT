@@ -4,10 +4,10 @@ public class Favorite {
     private int id;
     private String record;
 
-    public Favorite() {
+    Favorite() {
     }
 
-    public Favorite(int id, String record) {
+    Favorite(int id, String record) {
         this.id = id;
         this.record = record;
     }

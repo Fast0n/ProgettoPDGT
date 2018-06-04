@@ -11,9 +11,9 @@ import java.util.List;
 
 public class DatabaseRecents extends SQLiteOpenHelper {
 
-    static final String COLUMN_ID = "id";
-    static final String TABLE_NAME = "records";
-    static final String COLUMN_RECORD = "recent";
+    private static final String COLUMN_ID = "id";
+    private static final String TABLE_NAME = "records";
+    private static final String COLUMN_RECORD = "recent";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "db_recents";
 

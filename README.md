@@ -20,8 +20,21 @@ Il progetto _FindEAT_ si pone come obbiettivi primari:
 * Inserimento di filtri e feedback 
  * Visualizzazione dei filtri e dei feedback di Google o di FindEAT in base al ristorante cercato
 
-
 -----------------------------------------------------
+
+## Relazione ##
+
+Il progetto è composto da 3 obbiettivi principali:
+ * Realizzazione di un API (GET) in NodeJS
+ * Implementazione di un BotTelegram (Python)
+ * Implementazione di un'app Android (JAVA)
+
+
+
+<div align="center"><a><img src='img/schema.png' height='400' alt='icon'/></a></div>
+
+
+ ----------------------------------------------------
 ### FindEAT API ###
 
 Realizzazione di un API (GET ) alle API di Google e (POST) al database di Firebase di FindEAT e relativa documentazione:
@@ -72,10 +85,10 @@ Le caratteristiche dell' App sono le seguenti:
   * Gestire nome, apertura/chiusura, numero di telefono, valutazione, eventuali orari nel caso il ristorante fosse chiuso e la posizione, come descritto nel bot
   * Gestire filtri e feedback di Google e di FindEAT
 
-FindEAT è un’applicazione Android, dove l’utente, può sempre sfruttare le ricerche comOltre al bot riportato sopra e nel bot, ma ha anche la possibilità di salvare i locali che l’utente preferisce e rimanere sempre 
+FindEAT è un’applicazione Android, dove l’utente, può cercare i vari ristoranti a seconda del luogo in cui si trova ed ha anche la possibilità di salvare i locali che l’utente preferisce e rimanere sempre 
 
 <a><img src='img/img4.png' height='250' align="right"/></a>
-aggiornato. Inoltre e non meno importante, l’applicazione si collega direttamente ai messaggi per poter prenotare tramite sms. L’applicazione è stata realizzata in Java e anch’essa si interfaccia con le API di FindEAT
+aggiornato. Inoltre e non meno importante, l’applicazione si collega direttamente ai messaggi per poter prenotare tramite sms. L’applicazione è stata realizzata in Java e anch’essa si interfaccia con le API di FindEAT e al database di Firebase.
 
 ***UTILIZZALA ANCHE TUUU!!!*** *FindEAT i ristoranti a portata di App!!*
 

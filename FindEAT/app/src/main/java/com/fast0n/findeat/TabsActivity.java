@@ -45,17 +45,17 @@ public class TabsActivity extends AppCompatActivity {
     private void setupTabIcons() {
 
         TextView tabOne = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        tabOne.setText("Info Ristorante");
+        tabOne.setText(R.string.title_tab);
         tabOne.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_title, 0, 0, 0);
         tabLayout.getTabAt(0).setCustomView(tabOne);
 
         TextView tabTwo = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        tabTwo.setText("Feedback FindEAT");
+        tabTwo.setText(R.string.title_tab2);
         tabTwo.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_feedback, 0, 0, 0);
         tabLayout.getTabAt(1).setCustomView(tabTwo);
 
         TextView tabThree = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        tabThree.setText("Feedback Google");
+        tabThree.setText(R.string.title_tab3);
         tabThree.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_google, 0, 0, 0);
         tabLayout.getTabAt(2).setCustomView(tabThree);
 

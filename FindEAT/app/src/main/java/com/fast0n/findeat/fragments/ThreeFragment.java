@@ -32,7 +32,6 @@ import java.util.Objects;
 public class ThreeFragment extends Fragment {
 
     public ThreeFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -48,6 +47,7 @@ public class ThreeFragment extends Fragment {
         final List<Feedback> feedbackList = new ArrayList<>();
         final RecyclerView recycler_view;
 
+        // java addresses
         recycler_view = view.findViewById(R.id.recycler_view);
 
         recycler_view.setHasFixedSize(true);
@@ -62,7 +62,7 @@ public class ThreeFragment extends Fragment {
         getLuogo = extras.getString("luogo");
 
         String cerca = "?tipo=diretto&lista=";
-        String site_url = "https://progetto-pdgt.glitch.me/";
+        String site_url = getString(R.string.site_url);
         String url = site_url + cerca + getNome + " " + getLuogo;
 
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());

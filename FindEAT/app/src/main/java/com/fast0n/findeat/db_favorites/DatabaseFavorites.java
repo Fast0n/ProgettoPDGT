@@ -11,9 +11,9 @@ import java.util.List;
 
 public class DatabaseFavorites extends SQLiteOpenHelper {
 
-    public static final String COLUMN_ID = "id";
-    public static final String TABLE_NAME = "records";
-    public static final String COLUMN_RECORD = "favorite";
+    private static final String COLUMN_ID = "id";
+    private static final String TABLE_NAME = "records";
+    private static final String COLUMN_RECORD = "favorite";
 
     // Database Version
     private static final int DATABASE_VERSION = 1;

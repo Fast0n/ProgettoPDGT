@@ -14,15 +14,13 @@ public class CustomAdapterRestaurants extends RecyclerView.Adapter<CustomAdapter
 
     private List<DataRestaurants> countryList;
 
-    /**
-     * View holder class
-     */
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView nome, apertura, valutazione, indirizzo;
 
-        public MyViewHolder(View view) {
+        MyViewHolder(View view) {
             super(view);
+            // java addresses
             nome = view.findViewById(R.id.nome);
             apertura = view.findViewById(R.id.apertura);
             valutazione = view.findViewById(R.id.valutazione);
@@ -30,7 +28,7 @@ public class CustomAdapterRestaurants extends RecyclerView.Adapter<CustomAdapter
         }
     }
 
-    public CustomAdapterRestaurants(List<DataRestaurants> countryList) {
+    CustomAdapterRestaurants(List<DataRestaurants> countryList) {
         this.countryList = countryList;
     }
 
