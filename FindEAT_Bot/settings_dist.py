@@ -11,3 +11,10 @@ client_file = "clients_id.txt"
 
 # Url for api
 url_api = 'URL'
+
+config = {
+  "apiKey": "",
+  "authDomain": "findeatdb.firebaseapp.com",
+  "databaseURL": "https://findeatdb.firebaseio.com/",
+  "storageBucket": "findeatdb.appspot.com"
+}

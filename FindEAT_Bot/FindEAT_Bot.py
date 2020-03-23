@@ -1,5 +1,4 @@
-from firebase import firebase
-from settings import token, start_msg, client_file, url_api
+from settings import token, start_msg, client_file, url_api, config
 from telepot.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 from time import sleep
@@ -10,9 +9,10 @@ import requests
 import reverse_geocode
 import sys
 import telepot
+import pyrebase
 
-firebase = firebase.FirebaseApplication(
-    'https://findeatdb.firebaseio.com', None)
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
 
 # State for user
 user_state = {}
@@ -79,47 +79,40 @@ def on_chat_message(msg):
         except:
             author = msg['from']['first_name']
 
-        result = firebase.get(
-            '/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/', None)
+        result = db.child("restaurants").child(
+            place[chat_id]).child(restaurant[chat_id]).get()
+
         try:
-            datetime = int(time.time())
-            i = len(result)
-            result = firebase.patch('/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/'+str(i)+'/',
-                                    {'author_name': author, 'text': msg['text'], 'time': datetime})
-            bot.sendMessage(
-                chat_id, 'Grazie per aver recensito ' + restaurant[chat_id] + ', questa è la ' +
-                str(i+1) + ' recensione fatta 😄')
-
-            markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
-
-            bot.sendMessage(
-                chat_id, 'Si può pagare con carte di credito?', reply_markup=markup)
-
-            user_state[chat_id] = 7
-
+            i = len(result.val())
         except:
-            datetime = int(time.time())
             i = 0
-            result = firebase.patch('/restaurants/'+place[chat_id] + '/'+restaurant[chat_id] + '/'+str(i)+'/',
-                                    {'author_name': author, 'text': msg['text'], 'time': datetime})
-            bot.sendMessage(
-                chat_id, 'Complimenti! Hai creato la prima recensione per ' + restaurant[chat_id])
 
-            markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+        datetime = int(time.time())
 
-            bot.sendMessage(
-                chat_id, 'Abbiamo altre domande per te!!!👍 \nSi può pagare con carte di credito?', reply_markup=markup)
-            user_state[chat_id] = 7
+        data = {'author_name': author, 'text': msg['text'], 'time': datetime}
+        db.child("restaurants").child(place[chat_id]).child(
+            restaurant[chat_id]).child(i).set(data)
+
+        bot.sendMessage(
+            chat_id, 'Grazie per aver recensito ' + restaurant[chat_id] + ', questa è la ' +
+            str(i+1) + ' recensione fatta 😄')
+
+        markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
+
+        bot.sendMessage(
+            chat_id, 'Si può pagare con carte di credito?', reply_markup=markup)
+
+        user_state[chat_id] = 7
 
     elif user_state[chat_id] == 7:
         if msg['text'] == 'Si':
-            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/votisi',
-                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', 'votisi', {'votisi': 0, 'votino': 0})
+            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', 'votisi/', 'votino/'
+                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', 'votisi')
 
         if msg['text'] == 'No':
 
-            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/votino',
-                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', 'votino', {'votisi': 0, 'votino': 0})
+            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', 'votisi/', 'votino/'
+                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/cartadicredito/', 'votino')
 
         markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
 
@@ -130,13 +123,13 @@ def on_chat_message(msg):
 
     elif user_state[chat_id] == 8:
         if msg['text'] == 'Si':
-            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costo/alto',
-                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costo/', 'alto', {'alto': 0, 'basso': 0})
+            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costo/', 'alto/', 'basso/',
+                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costo/', 'alto')
 
         if msg['text'] == 'No':
 
-            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costo/basso',
-                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costo/', 'basso', {'alto': 0, 'basso': 0})
+            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costo/', 'alto/', 'basso/',
+                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/costo/', 'basso')
 
         markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
         bot.sendMessage(
@@ -145,12 +138,12 @@ def on_chat_message(msg):
 
     elif user_state[chat_id] == 9:
         if msg['text'] == 'Si':
-            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci/votisi',
-                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', 'votisi', {'votisi': 0, 'votino': 0})
+            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci/', 'votisi/', 'votino/',
+                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', 'votisi')
 
         if msg['text'] == 'No':
-            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci/votino',
-                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', 'votino', {'votisi': 0, 'votino': 0})
+            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci/', 'votisi/', 'votino/',
+                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/0/celiaci', 'votino')
 
         markup = ReplyKeyboardMarkup(keyboard=[["Si", "No"]])
         bot.sendMessage(
@@ -159,12 +152,12 @@ def on_chat_message(msg):
 
     elif user_state[chat_id] == 10:
         if msg['text'] == 'Si':
-            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino/votisi',
-                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', 'votisi', {'votisi': 0, 'votino': 0})
+            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino/', 'votisi/', 'votino/',
+                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', 'votisi')
 
         if msg['text'] == 'No':
-            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino/votino',
-                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', 'votino', {'votisi': 0, 'votino': 0})
+            filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino/', 'votisi/', 'votino/',
+                   '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/menu/1/bambino', 'votino')
 
         bot.sendMessage(
             chat_id, 'Grazie per aver risposto alle domande!!!🤞🏻🤝😄 ', reply_markup=ReplyKeyboardRemove(
@@ -198,55 +191,59 @@ def richiesta(url, msg):
 
         restaurant[chat_id] = nome
 
-        filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/contatore/0',
-               '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/contatore/', '0', {'0': 0})
+        filtri('/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/contatore/', '0/', '1/',
+               '/filters/'+place[chat_id] + '/'+restaurant[chat_id] + '/contatore/', '0')
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [dict(text='Feedback di Google', callback_data=1),
              dict(text='Feedback di FindEAT', callback_data=7)]
         ])
 
-        contatore = firebase.get('/filters/'+place[chat_id] + '/' +
-                                 restaurant[chat_id] + '/contatore/0', None)
-        cartadicredito = firebase.get(
-            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/cartadicredito/votisi', None)
-        cartadicredito1 = firebase.get(
-            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/cartadicredito/votino', None)
+        contatore = db.child('/filters/'+place[chat_id] + '/' +
+                             restaurant[chat_id] + '/contatore/0').get()
+        cartadicredito = db.child(
+            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/cartadicredito/votisi').get()
+        cartadicredito1 = db.child(
+            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/cartadicredito/votino').get()
 
-        costo = firebase.get(
-            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/costo/basso', None)
-        costo1 = firebase.get(
-            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/costo/alto', None)
+        costo = db.child(
+            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/costo/basso').get()
+        costo1 = db.child(
+            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/costo/alto').get()
 
-        celiaci = firebase.get(
-            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/menu/0/celiaci/votisi', None)
-        celiaci1 = firebase.get(
-            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/menu/0/celiaci/votino', None)
+        celiaci = db.child(
+            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/menu/0/celiaci/votisi').get()
+        celiaci1 = db.child(
+            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/menu/0/celiaci/votino').get()
 
-        bambino = firebase.get(
-            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/menu/1/bambino/votisi', None)
-        bambino1 = firebase.get(
-            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/menu/1/bambino/votino', None)
+        bambino = db.child(
+            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/menu/1/bambino/votisi').get()
+        bambino1 = db.child(
+            '/filters/'+place[chat_id] + '/' + restaurant[chat_id] + '/menu/1/bambino/votino').get()
 
         if apertura == 'Aperto' or apertura == None:
-            bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                            '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + 
-                            "\n\nFeedback by FindEAT" +
-                            "\nCercato " + str(contatore).replace("None", "0")+" volte" + 
-                            "\n💳 Pagamento con carta di credito: " + str(cartadicredito).replace("None", "0") + " Si , " + str(cartadicredito1).replace("None", "0") + " No"
-                            "\n💸 Locale Costoso: " + str(costo).replace("None", "0") + " Si, " + str(costo1).replace("None", "0") + " No"
-                            "\n📒 Menu senza glutine: si: " + str(celiaci).replace("None", "0") + ", no: " + str(celiaci1).replace("None", "0") +
-                            "\n👶🏼 Menu per bambini: " + str(bambino).replace("None", "0") + " si, " + str(bambino1).replace("None", "0") + " No")
+            text = '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') + '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + "\n\nFeedback by FindEAT" +\
+                "\nCercato " + str(contatore).replace("None", "0")+" volte" + "\n💳 Pagamento con carta di credito: " + str(cartadicredito).replace(
+                "None", "0") + " Si , " + str(cartadicredito1).replace("None", "0") + " No"
+            "\n💸 Locale Costoso: " + \
+                str(costo).replace("None", "0") + " Si, " + \
+                str(costo1).replace("None", "0") + " No"
+            "\n📒 Menu senza glutine: si: " + str(celiaci).replace("None", "0") + ", no: " + str(celiaci1).replace("None", "0") +\
+                "\n👶🏼 Menu per bambini: " + \
+                str(bambino).replace("None", "0") + " si, " + \
+                str(bambino1).replace("None", "0") + " No"
+            bot.sendMessage(chat_id, text)
 
         else:
-            bot.sendMessage(chat_id, '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') +
-                            '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari + 
-                            "\n\nFeedback by FindEAT" +
-                            "\nCercato " + str(contatore).replace("None", "0")+" volte" + 
-                            "\n💳 Pagamento con carta di credito: " + str(cartadicredito).replace("None", "0") + " Si , " + str(cartadicredito1).replace("None", "0") + " No"
-                            "\n💸 Locale Costoso: " + str(costo).replace("None", "0") + " Si, " + str(costo1).replace("None", "0") + " No"
-                            "\n📒 Menu senza glutine: si: " + str(celiaci).replace("None", "0") + ", no: " + str(celiaci1).replace("None", "0") +
-                            "\n👶🏼 Menu per bambini: " + str(bambino).replace("None", "0") + " si, " + str(bambino1).replace("None", "0") + " No")
+            text = '🍽 ' + nome + '\n🕐 ' + str(apertura).replace('None', 'Apertura non disponibile') + '\n📱 ' + str(numtell) + '\n⭐️ ' + str(valutazione) + '\n------\n' + orari +\
+                "\n\nFeedback by FindEAT" + "\nCercato " + str(contatore).replace("None", "0")+" volte" + "\n💳 Pagamento con carta di credito: " + str(cartadicredito).replace(
+                "None", "0") + " Si , " + str(cartadicredito1).replace("None", "0") + " No" +\
+                "\n💸 Locale Costoso: " + str(costo).replace("None", "0") + " Si, " + str(costo1).replace("None", "0") + " No" +\
+                "\n📒 Menu senza glutine: si: " + str(celiaci).replace("None", "0") + ", no: " + str(celiaci1).replace("None", "0") +\
+                "\n👶🏼 Menu per bambini: " + \
+                str(bambino).replace("None", "0") + " si, " + \
+                str(bambino1).replace("None", "0") + " No"
+            bot.sendMessage(chat_id, )
 
         bot.sendLocation(chat_id, posizione[0], posizione[1])
         bot.sendMessage(
@@ -257,20 +254,28 @@ def richiesta(url, msg):
         print("Errore API")
 
 
-def filtri(get, patch, request, check):
+def filtri(initial, opa, opb, setDB, increase):
 
-    try:
-        result = firebase.get(get, None)
+    a = db.child(initial + opa).get()
+    b = db.child(initial + opb).get()
 
-        n = int(result)
-        result = firebase.patch(patch, {request: n+1})
+    if increase == opa[:-1]:
+        try:
+            y = int(a.val())+1
+            n = b.val()
+        except:
+            y = 1
+            n = 0
+    else:
+        try:
+            n = int(b.val())+1
+            y = a.val()
+        except:
+            n = 1
+            y = 0
 
-    except:
-        result = firebase.patch(patch, check)
-        result = firebase.get(get, None)
-
-        n = int(result)
-        result = firebase.patch(patch, {request: n+1})
+    data = {opa[:-1]: y, opb[:-1]: n}
+    db.child(setDB).set(data)
 
 
 def cerca(luogo, msg):
@@ -401,8 +406,8 @@ def on_callback_query(msg):
                 edited, "Hai bisogno di aiuto?", reply_markup=keyboard)
 
         if (query_data == str(7)):
-            result = firebase.get(
-                '/restaurants/'+place[from_id] + '/'+restaurant[from_id] + '/', None)
+            result = db.child(
+                '/restaurants/'+place[from_id] + '/'+restaurant[from_id] + '/').get()
             if result == None:
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
                     [dict(text='Scrivi una recensione', callback_data=100)]
@@ -428,8 +433,8 @@ def on_callback_query(msg):
                         edited, str(i) + ' recensioni trovate', reply_markup=keyboard)
 
         if (query_data == str(8)):
-            result = firebase.get(
-                '/restaurants/'+place[from_id] + '/'+restaurant[from_id] + '/', None)
+            result = db.child(
+                '/restaurants/'+place[from_id] + '/'+restaurant[from_id] + '/').get()
             o = len(result)
             feedback = ''
             for i in range(int(o)):
