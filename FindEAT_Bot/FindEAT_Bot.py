@@ -6,11 +6,12 @@ import time
 import json
 import os
 import requests
-import reverse_geocode
+from geopy.geocoders import Nominatim
 import sys
 import telepot
 import pyrebase
 
+geo = Nominatim(user_agent="AppDaemon")
 firebase = pyrebase.initialize_app(config)
 db = firebase.database()
 
@@ -46,9 +47,13 @@ def on_chat_message(msg):
             cerca(msg['text'], msg)
 
         if content_type == 'location':
-            coordinates = (str(msg['location']['latitude']),
-                           str(msg['location']['longitude'])),
-            a = reverse_geocode.search(coordinates)[0]['city']
+            lat_long = "{}, {}".format(
+                str(msg['location']['latitude']), str(msg['location']['longitude']))
+            coordinates = geo.reverse(lat_long)
+            try:
+                a = coordinates.raw["address"]['town']
+            except:
+                a = coordinates.raw["address"]['city']
 
             cerca(a, msg)
 
@@ -191,30 +196,31 @@ def richiesta(url, msg):
     numtell = json_data['lista'][0]['numtell']
     valutazione = json_data['lista'][0]['valutazione']
 
-    counter('/filters/{}/'+nome + '/contatore/', '0/',
-            '/filters/{}/'+nome + '/contatore/', '0')
+    counter(('/filters/{}/{}/contatore/').format(place[chat_id], nome), '0/',
+            ('/filters/{}/{}/contatore/').format(place[chat_id], nome), '0')
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [dict(text='Feedback di Google', callback_data=1),
          dict(text='Feedback di FindEAT', callback_data=7)]
     ])
-    contatore = db.child('/filters/{}/' +
-                         nome + '/contatore/0').get()
+
+    contatore = db.child(
+        ('/filters/{}/{}/contatore/0').format(place[chat_id], nome)).get()
     cartadicredito = db.child(
-        '/filters/{}/' + nome + '/cartadicredito/votisi').get()
+        ('/filters/{}/{}/cartadicredito/votisi').format(place[chat_id], nome)).get()
     cartadicredito1 = db.child(
-        '/filters/{}/' + nome + '/cartadicredito/votino').get()
-    costo = db.child(
-        '/filters/{}/' + nome + '/costo/alto').get()
-    costo1 = db.child(
-        '/filters/{}/' + nome + '/costo/basso').get()
-    celiaci = db.child(
-        '/filters/{}/' + nome + '/menu/0/celiaci/votisi').get()
-    celiaci1 = db.child(
-        '/filters/{}/' + nome + '/menu/0/celiaci/votino').get()
-    bambino = db.child(
-        '/filters/{}/' + nome + '/menu/1/bambino/votisi').get()
-    bambino1 = db.child(
-        '/filters/{}/' + nome + '/menu/1/bambino/votino').get()
+        ('/filters/{}/{}/cartadicredito/votino').format(place[chat_id], nome)).get()
+    costo = db.child((
+        '/filters/{}/{}/costo/alto').format(place[chat_id], nome)).get()
+    costo1 = db.child((
+        '/filters/{}/{}/costo/basso').format(place[chat_id], nome)).get()
+    celiaci = db.child((
+        '/filters/{}/{}/menu/0/celiaci/votisi').format(place[chat_id], nome)).get()
+    celiaci1 = db.child((
+        '/filters/{}/{}/menu/0/celiaci/votino').format(place[chat_id], nome)).get()
+    bambino = db.child((
+        '/filters/{}/{}/menu/1/bambino/votisi').format(place[chat_id], nome)).get()
+    bambino1 = db.child((
+        '/filters/{}/{}/menu/1/bambino/votino').format(place[chat_id], nome)).get()
     if apertura == 'Aperto' or apertura == None:
         text = ("🍽{}\n🕐{}\n📱{}\n⭐️{}\n\nFeedback by FindEAT\nCercato {} volte\n💳 POS: {} Si, {} No\n").format(
             json_data['lista'][0]['nome'], str(apertura).replace('None', 'Apertura non disponibile'), str(numtell), str(valutazione), str(contatore.val()).replace("None", "0"), str(cartadicredito.val()).replace("None", "0"), str(cartadicredito1.val()).replace("None", "0"))
