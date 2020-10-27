@@ -4,7 +4,7 @@ attrs==19.3.0
 certifi==2019.11.28
 cffi==1.14.0
 chardet==3.0.4
-cryptography==2.8
+cryptography==3.2
 gcloud==0.18.3
 geographiclib==1.50
 geopy==1.21.0
