@@ -9,7 +9,7 @@ gcloud==0.18.3
 geographiclib==1.50
 geopy==1.21.0
 googleapis-common-protos==1.51.0
-httplib2==0.17.0
+httplib2==0.19.0
 idna==2.9
 jwcrypto==0.7
 multidict==4.7.5
